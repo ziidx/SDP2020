@@ -11,7 +11,10 @@ const ObjectId = require("mongodb").ObjectID;
 //temporary set up for when we connect the database
 let members = [];
 
-const CONNECTION_URL = "mongodb+srv://noid_admin:billDaddy2021@noid.uka07.mongodb.net/<dbname>?retryWrites=true&w=majority";
+//Define the constants we need for our setup
+const noid_admin=process.env.NOIDADMIN
+const noid_password=process.env.NOIDPASSWORD
+const CONNECTION_URL = `mongodb+srv://${noid_admin}:${noid_password}@noid.uka07.mongodb.net/<dbname>?retryWrites=true&w=majority`;
 const DATABASE_NAME = "example";
 
 var database, collection;
