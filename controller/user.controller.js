@@ -1,12 +1,13 @@
 
 import express from "express";
 import sha256 from "sha256";
+const Members = require('../models/members');
+
 const userController = express.Router();
 
+//Home Page application connection test
 userController.get('/', (req, res) => {
-   res.status(200).json({
-      status: 'user Controller API call successfully'
-   });
+   res.send("Welcome to NOID APP")
 });
 
 /**
@@ -14,35 +15,84 @@ userController.get('/', (req, res) => {
  * Add a new User to your database
  */
 userController.post("/add-user", (req, res) => {
-  
+  const member = new Members({
+    UID: req.body.UID,
+    Name: req.body.Name,
+    Age: req.body.Age,
+    License: req.body.License,
+    Expiry: req.body.Expiry
+  });
+  member.save().then(
+    () => {
+      res.status(201).json({
+        message: 'User Added Successfully!'
+      });
+      res.send('Done')
+    }
+  ).catch(
+    (error) => {
+      res.status(400).json({
+        error: error
+      });
+    }
+  );
 });
 
-userController.post('/members', (req,res) => {
-
+//list of all members for development purpose
+userController.get('/members', async(req,res) => {
+  const members = await Members.find({});
+  try {
+    res.send(members);
+  } catch (err) {
+    res.status(500).send(err);
+  }
 })
+
 //list of merchants for dev
-userController.post('/merchants', (req,res) => {
-
+userController.get('/merchants', async(req,res) => {
+	const merchants = await Merchants.find({});
+  try {
+    res.send(merchants);
+  } catch (err) {
+    res.status(500).send(err);
+  }
 })
+
 //virtual wallet for member
 userController.get('/:member/memberDB/virtualWallet', (req,res) => {
 	res.send('Here are the member Credentials')
 });
+
 //virtual wallet for merchant
 userController.get('/:merchant/merchantDB/virtualWallet', (req,res) => {
 	res.send('Here are the Merchant Credentials')
 });
 
-userController.post('/registration/memberCredentials', (req,res) => {
-
-    collection.insert(request.body, (error, result) => {
-        if(error) {
-            return response.status(500).send(error);
-        }
-        response.send(result.result);
-
-});
-	//please edit the credentials
+//for development purposes to test with dummy datbase post and subsequent http get of the same data
+userController.get('/registration/memberCredentials', (req,res) => {
+	console.log("Test")
+	const member = new Members({
+    UID: "req.body.UID",
+    Name: "req.body.Name",
+    Age: 20,
+    License: "req.body.License",
+    Expiry: 123123
+  });
+  member.save().then(
+    () => {
+      res.status(201).json({
+        message: 'Post saved successfully!'
+      });
+      res.send('Done')
+    }
+  ).catch(
+    (error) => {
+      res.status(400).json({
+        error: error
+      });
+    }
+  );
+  
 });
 
 userController.post('/:merchant/registration/merchantCredentials', (req,res) => {
@@ -58,6 +108,19 @@ userController.get('/:UID/information', (req,res) => {
 	//gets the question to be asked from merchant
 	//interacts with database
 	//collects the answers
+	Member.findOne({
+    _UID: req.params.UID
+  }).then(
+    (member) => {
+      res.status(200).json(thing);
+    }
+  ).catch(
+    (error) => {
+      res.status(404).json({
+        error: error
+      });
+    }
+  );
 });
 
 

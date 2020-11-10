@@ -1,4 +1,4 @@
 
 # Dependency directories
-package-lock.json
 node_modules/
+docker-compose.yml
