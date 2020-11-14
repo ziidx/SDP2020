@@ -1,5 +1,5 @@
 
 # Dependency directories
+config.js
 node_modules/
 docker-compose.yml
-config.js
