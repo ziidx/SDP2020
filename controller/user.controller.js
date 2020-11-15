@@ -1,12 +1,19 @@
 
 import express from "express";
 import sha256 from "sha256";
-const CryptoJS = require("crypto-js");
+const CryptoJS = require("crypto");
 const Members = require('../models/members');
 const userController = express.Router();
 
 var env = process.env.NODE_ENV || 'development';
 var config = require('../config')[env];
+//Checksum Method
+
+function checksum(UID, Name, Age, License, Expiry){
+	var baseString = UID + Name + Age + License + Expiry;
+	var hash = CryptoJS.createHash('sha256').update(baseString, 'utf8').digest('hex');
+	return hash;
+}
 
 //Home Page application connection test
 userController.get('/', (req, res) => {
@@ -18,12 +25,21 @@ userController.get('/', (req, res) => {
  * Add a new User to your database
  */
 userController.post("/add-user", (req, res) => {
+  	var UID=req.body.UID;
+    var Name=req.body.Name;
+    var Age=req.body.Age;
+    var License=req.body.License;
+    var Expiry=req.body.Expiry;
+  	
+    var Checksum = checksum(UID, Name, Age, License, Expiry);
+
   	const member = new Members({
-    UID: req.body.UID,
-    Name: req.body.Name,
-    Age: req.body.Age,
-    License: req.body.License,
-    Expiry: req.body.Expiry
+    UID: UID,
+    Name: Name,
+    Age: Age,
+    License: License,
+    Expiry: Expiry,
+    CHECKSUM: Checksum
   });
   member.save().then(
     () => {
@@ -177,12 +193,14 @@ userController.get('/merchants', async(req,res) => {
 })
 //Development API to test with dummy datbase post and subsequent http get of the same data
 userController.get('/registration/memberCredentials', (req,res) => {
+	var Checksum = checksum("x", "req.body.Name", "20", "req.body.License", "123123");
 	const member = new Members({
     UID: "x",
     Name: "req.body.Name",
     Age: "20",
     License: "req.body.License",
-    Expiry: "123123"
+    Expiry: "123123",
+    CHECKSUM: Checksum
   });
   member.save().then(
     () => {
