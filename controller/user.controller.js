@@ -215,7 +215,7 @@ userController.get('/registration/memberCredentials', (req,res) => {
   );
   
 });
-
+//Development APIs for JWT  registration
 userController.post('/register', function(req, res) {
 	var UID=req.body.UID;
     var Name=req.body.Name;
@@ -252,7 +252,7 @@ userController.post('/register', function(req, res) {
     }
   );
 });
-
+//Development API for JWT token validity
 userController.get('/userTest', function(req, res){
   var token = req.headers['x-access-token'];
   if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
@@ -268,4 +268,26 @@ userController.get('/userTest', function(req, res){
 	});
   });
 });
+//Development API for JWT login
+userController.post('/login', function(req, res) {
+  Members.findOne({ Name: req.body.Name }, function (err, user) {
+    if (err) return res.status(500).send('Error on the server.');
+    if (!user) return res.status(404).send('No user found.');
+    
+    // var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
+    // if (!passwordIsValid) return res.status(401).send({ auth: false, token: null });
+    
+    var token = jwt.sign({ id: user._id }, config.secret, {
+      expiresIn: 86400 // expires in 24 hours
+    });
+    
+    res.status(200).send({ auth: true, token: token });
+  });
+  
+});
+//Development API for JWT logout
+userController.get('/logout', function(req, res) {
+  res.status(200).send({ auth: false, token: null });
+});
+
 export default userController;
