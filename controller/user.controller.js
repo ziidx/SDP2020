@@ -4,6 +4,7 @@ import sha256 from "sha256";
 const CryptoJS = require("crypto");
 const Members = require('../models/members');
 const userController = express.Router();
+const jwt = require('jsonwebtoken');
 
 var env = process.env.NODE_ENV || 'development';
 var config = require('../config')[env];
@@ -46,7 +47,6 @@ userController.post("/add-user", (req, res) => {
       res.status(201).json({
         message: 'User Added Successfully!'
       });
-      res.send('Done')
     }
   ).catch(
     (error) => {
@@ -216,4 +216,56 @@ userController.get('/registration/memberCredentials', (req,res) => {
   
 });
 
+userController.post('/register', function(req, res) {
+	var UID=req.body.UID;
+    var Name=req.body.Name;
+    var Age=req.body.Age;
+    var License=req.body.License;
+    var Expiry=req.body.Expiry;
+  	
+    var Checksum = checksum(UID, Name, Age, License, Expiry);
+
+  	const member = new Members({
+    UID: UID,
+    Name: Name,
+    Age: Age,
+    License: License,
+    Expiry: Expiry,
+    CHECKSUM: Checksum
+  });
+  	member.save().then(
+    () => {
+    var token = jwt.sign({ id: member._id }, config.server.jwtSecret, {
+      expiresIn: 86400 // expires in 24 hours
+    });	
+      res.status(200).json({
+        message: 'User Added Successfully!',
+        auth: true,
+        token: token
+      });
+    }
+  ).catch(
+    (error) => {
+      res.status(400).json({
+        error: error
+      });
+    }
+  );
+});
+
+userController.get('/userTest', function(req, res){
+  var token = req.headers['x-access-token'];
+  if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
+  
+  jwt.verify(token, config.server.jwtSecret, function(err, decoded) {
+    if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+  // res.status(200).send(decoded);    
+  Members.findById(decoded.id, function (err, user) {
+  if (err) return res.status(500).send("There was a problem finding the user.");
+  if (!user) return res.status(404).send("No user found.");
+  
+  res.status(200).send(user);
+	});
+  });
+});
 export default userController;
