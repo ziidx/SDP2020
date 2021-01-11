@@ -19,7 +19,6 @@ var config = require('./config')[env];
 
 const CONNECTION_URL = `mongodb://${config.database.noid_admin}:${config.database.noid_password}@localhost:${config.database.port}/${config.database.DATABASE_NAME}?authSource=admin&authMechanism=SCRAM-SHA-1`;
 
-var database, collection;
 //security freatures
 app.use(helmet());
 app.use(cors());

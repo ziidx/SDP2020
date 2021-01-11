@@ -1,18 +1,25 @@
 
 import express from "express";
 import sha256 from "sha256";
+
 const CryptoJS = require("crypto");
-const Members = require('../models/members');
-const userController = express.Router();
 const jwt = require('jsonwebtoken');
+const userController = express.Router();
+
+const Members = require('../models/members');
+const Merchants = require('../models/merchants');
+
 
 var env = process.env.NODE_ENV || 'development';
 var config = require('../config')[env];
 //Checksum Method
 
-function checksum(UID, Name, Age, License, Expiry){
-	var baseString = UID + Name + Age + License + Expiry;
-	var hash = CryptoJS.createHash('sha256').update(baseString, 'utf8').digest('hex');
+function checksum(){
+	var baseString;
+	for (var i = 0; i < arguments.length; i++) {
+    baseString = baseString + arguments[i];
+  }
+  var hash = CryptoJS.createHash('sha256').update(baseString, 'utf8').digest('hex');
 	return hash;
 }
 
@@ -23,9 +30,9 @@ userController.get('/', (req, res) => {
 
 /**
  * POST/
- * Add a new User to your database
+ * Add a new member to your database
  */
-userController.post("/add-user", (req, res) => {
+userController.post("/add-member", (req, res) => {
   	var UID=req.body.UID;
     var Name=req.body.Name;
     var Age=req.body.Age;
@@ -45,7 +52,7 @@ userController.post("/add-user", (req, res) => {
   member.save().then(
     () => {
       res.status(201).json({
-        message: 'User Added Successfully!'
+        message: 'Member Added Successfully!'
       });
     }
   ).catch(
@@ -56,7 +63,41 @@ userController.post("/add-user", (req, res) => {
     }
   );
 });
+/**
+ * POST/
+ * Add a new merchant to your database
+ */
+userController.post("/add-merchant", (req, res) => {
+    var UID=req.body.UID;
+    var Name=req.body.Name;
+    var Tier=req.body.Tier;
+    var Expiry=req.body.Expiry;
+    var Organization=req.body.Organization;
+    
+    var Checksum = checksum(UID, Name, Tier, Expiry, Organization);
 
+    const merchant = new Merchants({
+    UID: UID,
+    Name: Name,
+    Tier: Tier,
+    Expiry: Expiry,
+    Organization: Organization,
+    CHECKSUM: Checksum
+  });
+  merchant.save().then(
+    () => {
+      res.status(201).json({
+        message: 'Merchant Added Successfully!'
+      });
+    }
+  ).catch(
+    (error) => {
+      res.status(400).json({
+        error: error
+      });
+    }
+  );
+});
 /**
  * GET/
  * To retrive Virtual Wallet information for a given member
