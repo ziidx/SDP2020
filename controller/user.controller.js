@@ -4,6 +4,7 @@ import sha256 from "sha256";
 
 const CryptoJS = require("crypto");
 const jwt = require('jsonwebtoken');
+const url = require('url');
 const userController = express.Router();
 
 const Members = require('../models/members');
@@ -100,48 +101,51 @@ userController.post("/add-merchant", (req, res) => {
 });
 /**
  * GET/
- * To retrive Virtual Wallet information for a given member
+ * To retrive Virtual Wallet information for a given member UID as a query
  */
-userController.get('/:member/memberDB/virtualWallet', (req,res) => {
-	res.send('Here are the member Credentials')
+userController.get('/members/virtual-wallet', (req,res) => {
+ 
+ var id = req.query.UID;
+ 
+ Members.findById(id)
+  .then(doc => {
+    res.status(200).send(doc);
+  })
+  .catch(err => {
+    console.log(err);
+  });
 });
 /**
  * GET/
- * To retrive Virtual Wallet information for a given mmerchant
+ * To retrive Virtual Wallet information for a given mmerchant UID as a query
  */
-userController.get('/:merchant/merchantDB/virtualWallet', (req,res) => {
-	res.send('Here are the Merchant Credentials')
-});
-/**
- * POST/
- * To post values for a specific merchant once the merchant ID is set
- */
-userController.post('/:merchant/registration/merchantCredentials', (req,res) => {
-	//'Please edit the credentials
+userController.get('/merchants/virtual-wallet', (req,res) => {
+ var id = req.query.UID;
+ 
+ Merchants.findById(id)
+  .then(doc => {
+    res.status(200).send(doc);
+  })
+  .catch(err => {
+    console.log(err);
+  });
 });
 
 /**
  * GET/
- * To retrive information for a given member for Merchant Side
+ * To retrive information from a member and pass it to the merchant
  */
 
-userController.get('/:UID/information', (req,res) => {
-	//gets the question to be asked from merchant
-	//interacts with database
-	//collects the answers
-	Member.findOne({
-    _UID: req.params.UID
-  }).then(
-    (member) => {
-      res.status(200).json(thing);
-    }
-  ).catch(
-    (error) => {
-      res.status(404).json({
-        error: error
-      });
-    }
-  );
+userController.get('/data-request', (req,res) => {
+	/*
+      Query: UID for member as received from the member card-scanner interaction(communicated via merchant phone)
+             UID for merchant as recevied from scanner(communicated via merchant phone)
+             Question posed by merchant(Tier-list>Question-list)
+             Finds appropriate data entry, processes, information and sends it across.
+
+  */
+  
+	
 });
 
 
