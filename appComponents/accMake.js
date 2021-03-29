@@ -2,7 +2,6 @@ import React from 'react';
 import {View, Text, TextInput, TouchableOpacity} from 'react-native';
 import styles from './compStyles';
 import axios from 'axios';
-import storeToken from '../services/auth-service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const accMake = ({history}) => {

@@ -8,7 +8,6 @@ import merchLogin from './appComponents/merchLogin';
 import accMake from './appComponents/accMake';
 import memProfile from './appComponents/memProfile';
 import merchProfile from './appComponents/merchProfile';
-import AuthService from "./services/auth-service";
 
 import 
 {
