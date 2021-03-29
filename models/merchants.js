@@ -16,13 +16,19 @@ function decrypt(ciphertext){
 	var plaintext = bytes.toString(CryptoJS.enc.Utf8);
 	return plaintext;
 }
+function hash(password){
+  var password_hash = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);  
+  return String(password_hash);
+}
 const MerchantSchema = new mongoose.Schema({
-  UID: { type: String, required: true, set: encrypt, get: decrypt },
+  username: {type: String, required: false, unique: true},
+  password: {type: String, required: false, select: false, set: hash},
+  UID: { type: String, required: true, unique: true, set: encrypt, get: decrypt },
   Name: { type: String, required: true, set: encrypt, get: decrypt },
-  Tier: { type: String, required: true, set: encrypt, get: decrypt },
-  Expiry: { type: String, required: true, set: encrypt, get: decrypt },
-  Organization: { type: String, required: true, set: encrypt, get: decrypt},
-  CHECKSUM: { type: String, required: true }
+  Tier: { type: String, required: true, set: encrypt, select: false, get: decrypt },
+  Expiry: { type: String, required: true, select: false, set: encrypt, get: decrypt },
+  Organization: { type: String, required: true, select: false, set: encrypt, get: decrypt},
+  CHECKSUM: { type: String, required: true, select: false }
 },{toJSON: {getters: true}});
 
 module.exports = mongoose.model('Merchants', MerchantSchema);

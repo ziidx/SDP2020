@@ -15,6 +15,9 @@ var env = process.env.NODE_ENV || 'development';
 var config = require('../config')[env];
 //Checksum Method
 
+var question_dict = {};
+var answer_dict = {}
+
 function checksum(){
 	var baseString;
 	for (var i = 0; i < arguments.length; i++) {
@@ -34,7 +37,9 @@ userController.get('/', (req, res) => {
  * Add a new member to your database
  */
 userController.post("/add-member", (req, res) => {
-  	var UID=req.body.UID;
+  	var username =req.body.username;
+    var password = req.body.password;
+    var UID=req.body.UID;
     var Name=req.body.Name;
     var Age=req.body.Age;
     var License=req.body.License;
@@ -43,6 +48,8 @@ userController.post("/add-member", (req, res) => {
     var Checksum = checksum(UID, Name, Age, License, Expiry);
 
   	const member = new Members({
+    username: username,
+    password: password,
     UID: UID,
     Name: Name,
     Age: Age,
@@ -69,6 +76,8 @@ userController.post("/add-member", (req, res) => {
  * Add a new merchant to your database
  */
 userController.post("/add-merchant", (req, res) => {
+    var username =req.body.username;
+    var password = req.body.password;
     var UID=req.body.UID;
     var Name=req.body.Name;
     var Tier=req.body.Tier;
@@ -78,6 +87,8 @@ userController.post("/add-merchant", (req, res) => {
     var Checksum = checksum(UID, Name, Tier, Expiry, Organization);
 
     const merchant = new Merchants({
+    username: username,
+    password: password,
     UID: UID,
     Name: Name,
     Tier: Tier,
@@ -133,7 +144,7 @@ userController.get('/merchants/virtual-wallet', (req,res) => {
 
 /**
  * GET/
- * To retrive information from a member and pass it to the merchant
+ * To push for data request from the merchant end. Gets UIDs and question from merchant. Awaits response from client
  */
 
 userController.get('/data-request', (req,res) => {
@@ -141,27 +152,73 @@ userController.get('/data-request', (req,res) => {
       Query: UID for member as received from the member card-scanner interaction(communicated via merchant phone)
              UID for merchant as recevied from scanner(communicated via merchant phone)
              Question posed by merchant(Tier-list>Question-list)
-             Finds appropriate data entry, processes, information and sends it across.
-
   */
+  var member_id = req.query.memberUID;
+  var merchant_id = req.query.merchantUID;
+  var question = req.query.question;
+  question_dict[member_id] = [merchant_id,question];
+
+  //force wait till member uses the info from this to update answer_dict
   
+  if(member_id in answer_dict){
+    res.status(200).send(answer_dict[member_id]);
+  }
+  else{
+        res.status(201).json({message:'Request could not be completed'});
+  }
 	
 });
 
 
 /**
  * GET/
- * To retrive permission to check for credentials
+ * To retrive permission to check for credentials from member. Member offers memberID and waits to see question
  */
- userController.get('/:UID/memberFE/permission', (req,res) => {
+ userController.get('/memberFE/permission', (req,res) => {
+   var memberid = req.query.UID;
+
+   if(memberid in question_dict){
+    var merchant_id = question_dict[memberid][0];
+    var question = question_dict[memberid][1];
+    console.log("Test", merchant_id,question)
+    res.status(201).json({merchantid: merchant_id, question: question, message: 'Request for info made'});
+   }
+   else{
+    res.status(201).json({message:'No info request found'});
+   }
+  //use the id to send push notification to member frontend
 	//gets permission from FE
 });
 /**
  * GET/
- * To retrive Credentials from the DB
+ * To retrive Credentials from the DB when member approves data sharing
  */
-userController.get('/:UID/memberDB/information', (req,res) => {
-	//gets info from database
+userController.get('/dataprocessing', (req,res) => {
+	var merchant_id = req.query.merchantUID;
+  var member_id = req.query.memberUID;
+  var question = req.query.question;
+  var answer = "test";
+  console.log("Step into doc", member_id)
+   Members.findById(member_id)
+  .then(doc => {
+    answer_dict[member_id] = [question,answer];
+    console.log("Value added to answer_dict", answer_dict);
+    res.status(200).send(doc);
+  })
+  .catch(err => {
+    console.log(err);
+  });
+  //gets info from database
+});
+
+/**
+*GET/
+*for member to deny the request sent by the merchant
+**/
+userController.get('/denied',(req,res) => {
+  var memberid = req.query.member_id;
+  answer_dict[member_id] = 'Request Denied'; 
+  res.status(200);
 });
 /**
  * GET/
@@ -240,8 +297,10 @@ userController.get('/merchants', async(req,res) => {
 userController.get('/registration/memberCredentials', (req,res) => {
 	var Checksum = checksum("x", "req.body.Name", "20", "req.body.License", "123123");
 	const member = new Members({
-    UID: "x",
-    Name: "req.body.Name",
+    username: "lloydfrancis",
+    password: "kiteretsu",
+    UID: "xxxxtentacion",
+    Name: "johny braco",
     Age: "20",
     License: "req.body.License",
     Expiry: "123123",
@@ -262,7 +321,9 @@ userController.get('/registration/memberCredentials', (req,res) => {
 });
 //Development APIs for JWT  registration
 userController.post('/register', function(req, res) {
-	var UID=req.body.UID;
+	  var username =req.body.username;
+    var password = req.body.password;
+    var UID=req.body.UID;
     var Name=req.body.Name;
     var Age=req.body.Age;
     var License=req.body.License;
@@ -271,6 +332,8 @@ userController.post('/register', function(req, res) {
     var Checksum = checksum(UID, Name, Age, License, Expiry);
 
   	const member = new Members({
+    username: username,
+    password: password,  
     UID: UID,
     Name: Name,
     Age: Age,
