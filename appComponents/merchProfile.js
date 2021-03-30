@@ -4,7 +4,7 @@ import styles from './compStyles';
 import axios from 'axios';
 
 
-import NfcManager, {NfcEvents} from '../react-native-nfc-manager';
+import NfcManager, {NfcEvents} from 'react-native-nfc-manager';
 
 // const testGetCall = () => {
 //   axios

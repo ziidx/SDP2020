@@ -141,7 +141,8 @@ const multipleRequestsInSingleCall = () => {
 };
 */
 
-function permission{
+function permission(){
+  console.log("Hello");
   //establish get connection with backend API
 
       /*
@@ -170,7 +171,9 @@ function permission{
   //You can use the concept of states to manage this. The two methods below are for when those buttons are pushed
 }
 
-function agree{
+function agree(){
+  console.log("Hello1");
+
   /*
           API to be called:  (get) /dataprocessing
           Query Params: merchantUID(you get this as response from permissions function above), memberUID(=you should receive this upon login as message), question(= You get this as response from permissions function above)
@@ -190,7 +193,9 @@ function agree{
 //       alert(error.m
 }
 
-function disagree{
+function disagree(){
+    console.log("Hello2");
+
   /*
           API to be called:  (get) /denied
           Query Params: merchantUID(you get this as response from permissions function above), memberUID(=you should receive this upon login as message), question(= You get this as response from permissions function above)
