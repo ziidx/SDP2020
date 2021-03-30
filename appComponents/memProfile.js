@@ -8,22 +8,37 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const testValidJWT = async () => {
   try {
     const authHeader = await AsyncStorage.getItem('JWT');
-    const response = await axios.get('https://860f0d1e46aa.ngrok.io/userTest', { headers: {'x-access-token': authHeader} });
+    const response = await axios.get('https://3a43e6f2bd15.ngrok.io/userTest', { headers: {'x-access-token': authHeader} });
     alert(JSON.stringify(response.data));
   } 
   
   catch (error) {
     alert(error.message);
   }
-
 };
 
+
+
 const memProfile = ({history}) => {
+
+  const logOut = async () => {
+    try {
+      await AsyncStorage.removeItem('JWT');
+      if(!await AsyncStorage.getItem('JWT')){
+        history.push('/');
+      }
+    }
+
+    catch (error){
+      alert(error.message);
+    }
+  }
+
 
   return(
     <View>
       <Text style={styles.header}>
-        Welcome to the Test Credentials Page!
+        Welcome to the Member Profile Page!
       </Text>
 
       <Text style = {styles.header}>
@@ -39,8 +54,8 @@ const memProfile = ({history}) => {
 
         <TouchableOpacity
           style={styles.buttonStyle}
-          onPress= {() => history.push("/")}>
-          <Text> Back to Homepage </Text>
+          onPress= {logOut}>
+          <Text> Log Out </Text>
         </TouchableOpacity>
       </View>
 

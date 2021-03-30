@@ -17,22 +17,21 @@ const accMake = ({history}) => {
     setErrMsg('');
 
     try{
-      const response = await axios.post('http://860f0d1e46aa.ngrok.io/register', {
+      const response = await axios.post('http://3a43e6f2bd15.ngrok.io/register', {
         UID: uid,
         Name: name,
         Age: age,
         License: license,
         Expiry: expiry,
       })
-      await AsyncStorage.setItem('JWT', response.data.token)
-      history.push("/memProfile");
 
+      alert(JSON.stringify(response.data.message));
+      history.push('/');
     }
 
     catch (error) {
       setErrMsg(error);
     }
-
   }
 
 

@@ -8,7 +8,7 @@ import NfcManager, {NfcEvents} from 'react-native-nfc-manager';
 
 
 function NFCSetup(){
-  initNfc();
+  //initNfc();
   readNdef();
   console.log("Running NFC")
 }
@@ -57,12 +57,38 @@ function readNdef() {
 }
 
 
+const testValidJWT = async () => {
+  try {
+    const authHeader = await AsyncStorage.getItem('JWT');
+    const response = await axios.get('https://3a43e6f2bd15.ngrok.io//userTest', { headers: {'x-access-token': authHeader} });
+    alert(JSON.stringify(response.data));
+  } 
+  
+  catch (error) {
+    alert(error.message);
+  }
+};
+
+
 const merchProfile = ({history}) => {
+  const logOut = async () => {
+    try {
+      await AsyncStorage.removeItem('JWT');
+      if(!await AsyncStorage.getItem('JWT')){
+        history.push('/');
+      }
+    }
+
+    catch (error){
+      alert(error.message);
+    }
+  }
+
 
   return(
     <View>
       <Text style={styles.header}>
-        Welcome to the Test Credentials Page!
+        Welcome to the Merchant Profile Page!
       </Text>
 
       <Text>
@@ -72,15 +98,8 @@ const merchProfile = ({history}) => {
       <View>
         <TouchableOpacity
         style={styles.buttonStyle}
-        onPress={testGetCall}>
-          <Text> Test GET Request </Text>
-        </TouchableOpacity>
-
-
-        <TouchableOpacity
-        style={styles.buttonStyle}
-        onPress={testPostCall}>
-          <Text> Test POST </Text>
+        onPress={testValidJWT}>
+          <Text> Test JWT Authentication </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -91,8 +110,8 @@ const merchProfile = ({history}) => {
 
         <TouchableOpacity
           style={styles.buttonStyle}
-          onPress= {() => history.push("/")}>
-          <Text> Back to Homepage </Text>
+          onPress= {logOut}>
+          <Text> Log Out </Text>
         </TouchableOpacity>
       </View>
 

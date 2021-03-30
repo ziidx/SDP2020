@@ -2,37 +2,34 @@ import React from 'react';
 import {View, Text, TouchableOpacity, TextInput} from 'react-native';
 import styles from './compStyles';
 import axios from 'axios';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const memLogin = ({history}) => {
   const [username, onChangeUserN] = React.useState('');
   const [errMsg, setErrMsg] = React.useState('');
 
-  const loginMem = () => {
+  const loginMem = async () => {
     setErrMsg('');
-    axios
-    .post('https://jsonplaceholder.typicode.com/posts', {
-      title: 'test',
-      body: 'test',
-      userId: 1,
-    })
-    .then(function (response){
-      console.log("success!");
-      if (response.data.token) {
-          AsyncStorage.setItem("user", JSON.stringify(response.data));
-          history.push("/memProfile");
-      }
 
-      return response.data;
-    })
-    .catch(function (error) {
-      console.log("error");
+    try{
+      const response = await axios.post('http://3a43e6f2bd15.ngrok.io/login', {
+        Name: username
+      })
+
+      await AsyncStorage.setItem('JWT', response.data.token);
+
+      if(await AsyncStorage.getItem('JWT')){
+        history.push('/memProfile');
+      }
+    }
+
+    catch (error) {
       setErrMsg(error);
-    })
+    }
   }
 
-  return (
 
+  return (
     <View>
         <Text style={styles.header}>
           Welcome to NoID Member Login!
@@ -41,7 +38,7 @@ const memLogin = ({history}) => {
         <View>
           <TextInput
             style={styles.inputBar}
-            placeholder={'Username or E-mail'}
+            placeholder={'Name'}
             autoCapitalize="none"
             autoCompleteType="off"
             autoCorrect={false}

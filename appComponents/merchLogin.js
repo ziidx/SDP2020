@@ -2,30 +2,32 @@ import React from 'react';
 import {View, Text, TouchableOpacity, TextInput} from 'react-native';
 import styles from './compStyles';
 import axios from 'axios';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const merchLogin = ({history}) => {
-  const [name, onChangeN] = React.useState('');
+  const [username, onChangeN] = React.useState('');
   const [errMsg, setErrMsg] = React.useState('');
 
-    const loginMerch = () => {
+  const loginMerch = async () => {
     setErrMsg('');
-    axios
-    .post('https://jsonplaceholder.typicode.com/posts', {
-      title: 'test',
-      body: 'test',
-      userId: 1,
-    })
-    .then(function (response){
-      if (response.data.token) {
-          AsyncStorage.setItem("user", JSON.stringify(response.data));
-          history.push("/merchProfile");
+
+    try{
+      const response = await axios.post('https://3a43e6f2bd15.ngrok.io/login', {
+        Name: username
+      })
+      
+      await AsyncStorage.setItem('JWT', response.data.token);
+      
+      if(await AsyncStorage.getItem('JWT')){
+        history.push('/merchProfile');
       }
-    })
-    .catch(function (error) {
+    }
+
+    catch (error) {
       setErrMsg(error);
-    })
+    }
   }
+
 
   return (
     <View>
@@ -36,17 +38,17 @@ const merchLogin = ({history}) => {
         <View>
           <TextInput
             style={styles.inputBar}
-            placeholder={'Name'}
+            placeholder={'Username'}
             autoCapitalize="none"
             autoCompleteType="off"
             autoCorrect={false}
             onChangeText={(text) => onChangeN(text)}
-            value = {name}
+            value = {username}
           />
           
           <TouchableOpacity
             style={styles.buttonStyle}
-            onPress = {loginMerch}>
+            onPress = {() => history.push("/merchProfile")}>
             <Text> Login </Text>
           </TouchableOpacity>
 
