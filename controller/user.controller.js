@@ -378,14 +378,14 @@ userController.get('/userTest', function(req, res){
 });
 //Development API for JWT login
 userController.post('/login', function(req, res) {
-  Members.findOne({ Name: req.body.Name }, function (err, user) {
+  Members.find({ username: req.body.username }, function (err, user) {
     if (err) return res.status(500).send('Error on the server.');
     if (!user) return res.status(404).send('No user found.');
     
     // var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
     // if (!passwordIsValid) return res.status(401).send({ auth: false, token: null });
-    
-    var token = jwt.sign({ id: user._id }, config.secret, {
+    console.log("User is", user);
+    var token = jwt.sign({ id: user._id }, config.server.jwtSecret, {
       expiresIn: 86400 // expires in 24 hours
     });
     
