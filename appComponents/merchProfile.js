@@ -2,13 +2,39 @@ import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import styles from './compStyles';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import NfcManager, {NfcEvents} from 'react-native-nfc-manager';
 
 
+import NfcManager, {NfcEvents} from '../react-native-nfc-manager';
+
+// const testGetCall = () => {
+//   axios
+//     .get('https://jsonplaceholder.typicode.com/posts/1')
+//     .then(function (response) {
+//       // handle success
+//       alert(JSON.stringify(response.data));
+//     })
+//     .catch(function (error) {
+//       // handle error
+//       alert(error.message);
+//     })
+// };
+
+/*
+const getDataUsingAsyncAwaitGetCall = async () => {
+  try {
+    const response = await axios.get(
+      'https://jsonplaceholder.typicode.com/posts/2',
+    );
+    alert(JSON.stringify(response.data));
+  } catch (error) {
+    // handle error
+    alert(error.message);
+  }
+};
+*/
 
 function NFCSetup(){
-  //initNfc();
+  initNfc();
   readNdef();
   console.log("Running NFC")
 }
@@ -26,10 +52,17 @@ function readNdef() {
     NfcManager.setEventListener(NfcEvents.DiscoverTag, (tag) => {
       tagFound = tag;
       resolve(tagFound);
-      // await NfcManager.getNdefMessage();
-      // console.log("Payload hunter:", test )
-      console.log("TAG FOUND",String.fromCharCode(...tagFound.ndefMessage[0].payload))
-      //establish get connection with backend API: memberFe/permission to get a valid piece of data object from them
+      var memberID = String.fromCharCode(...tagFound.ndefMessage[0].payload);
+
+      //establish get connection with backend API
+
+      /*
+          API to be called:  (get) /data-request with a Button that reads "Request (question) from (memberID)"
+          Query Params: memberUID(=the variable memberID), merchantUID(=you should receive it as message during login), question(hardcoded as "Are you of legal age")
+          Response: question(=question provided), answer(=test)
+
+          Please make the axios call below
+      */
       
       // axios
 //     .get('https://jsonplaceholder.typicode.com/posts/1')
@@ -56,39 +89,59 @@ function readNdef() {
   });
 }
 
+async function initNfc() {
+  await NfcManager.start();
+}
 
-const testValidJWT = async () => {
-  try {
-    const authHeader = await AsyncStorage.getItem('JWT');
-    const response = await axios.get('https://3a43e6f2bd15.ngrok.io//userTest', { headers: {'x-access-token': authHeader} });
-    alert(JSON.stringify(response.data));
-  } 
-  
-  catch (error) {
-    alert(error.message);
-  }
+const testPostCall = () => {
+  axios
+    .post('https://jsonplaceholder.typicode.com/posts', {
+      title: 'test',
+      body: 'test',
+      userId: 1,
+    })
+    .then(function (response) {
+      // handle success
+      alert(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+      // handle error
+      alert(error.message);
+    });
 };
 
+/*
+const multipleRequestsInSingleCall = () => {
+  axios
+    .all([
+      axios
+        .get('https://jsonplaceholder.typicode.com/posts/1')
+        .then(function (response) {
+          // handle success
+          alert('Post 1 : ' + JSON.stringify(response.data));
+        }),
+      axios
+        .get('https://jsonplaceholder.typicode.com/posts/2')
+        .then(function (response) {
+          // handle success
+          alert('Post 2 : ' + JSON.stringify(response.data));
+        }),
+    ])
+    .then(
+      axios.spread(function (acct, perms) {
+        // Both requests are now complete
+        alert('Both requests are now complete');
+      }),
+    );
+};
+*/
 
 const merchProfile = ({history}) => {
-  const logOut = async () => {
-    try {
-      await AsyncStorage.removeItem('JWT');
-      if(!await AsyncStorage.getItem('JWT')){
-        history.push('/');
-      }
-    }
-
-    catch (error){
-      alert(error.message);
-    }
-  }
-
 
   return(
     <View>
       <Text style={styles.header}>
-        Welcome to the Merchant Profile Page!
+        Welcome to the Test Credentials Page!
       </Text>
 
       <Text>
@@ -98,10 +151,31 @@ const merchProfile = ({history}) => {
       <View>
         <TouchableOpacity
         style={styles.buttonStyle}
-        onPress={testValidJWT}>
-          <Text> Test JWT Authentication </Text>
+        onPress={testGetCall}>
+          <Text> Test GET Request </Text>
         </TouchableOpacity>
 
+        {/*}
+        <TouchableOpacity
+        style={styles.buttonStyle}
+        onPress={getDataUsingAsyncAwaitGetCall}>
+          <Text> Test GET with Async Await </Text>
+        </TouchableOpacity>
+        */}
+
+        <TouchableOpacity
+        style={styles.buttonStyle}
+        onPress={testPostCall}>
+          <Text> Test POST </Text>
+        </TouchableOpacity>
+
+        {/*
+        <TouchableOpacity
+        style={styles.buttonStyle}
+        onPress={multipleRequestsInSingleCall}>
+          <Text> Test Concurrent Requests </Text>
+        </TouchableOpacity>
+        */}
         <TouchableOpacity
           style={styles.buttonStyle} 
           onPress = {NFCSetup}> 
@@ -110,8 +184,8 @@ const merchProfile = ({history}) => {
 
         <TouchableOpacity
           style={styles.buttonStyle}
-          onPress= {logOut}>
-          <Text> Log Out </Text>
+          onPress= {() => history.push("/")}>
+          <Text> Back to Homepage </Text>
         </TouchableOpacity>
       </View>
 
