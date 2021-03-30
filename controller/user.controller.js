@@ -203,7 +203,7 @@ userController.get('/dataprocessing', (req,res) => {
   .then(doc => {
     answer_dict[member_id] = [question,answer];
     console.log("Value added to answer_dict", answer_dict);
-    res.status(200).send(doc);
+    res.status(200) ;
   })
   .catch(err => {
     console.log(err);
@@ -216,8 +216,10 @@ userController.get('/dataprocessing', (req,res) => {
 *for member to deny the request sent by the merchant
 **/
 userController.get('/denied',(req,res) => {
+  var merchant_id = req.query.merchantUID;
   var memberid = req.query.member_id;
-  answer_dict[member_id] = 'Request Denied'; 
+  var question = req.query.question;
+  answer_dict[member_id] = [question, 'Request Denied']; 
   res.status(200);
 });
 /**
