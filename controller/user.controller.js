@@ -378,7 +378,7 @@ userController.get('/userTest', function(req, res){
 });
 //Development API for JWT login
 userController.post('/login', function(req, res) {
-  Members.find({ username: req.body.username }, function (err, user) {
+  Members.findOne({ username: req.body.username }, function (err, user) {
     if (err) return res.status(500).send('Error on the server.');
     if (!user) return res.status(404).send('No user found.');
     
@@ -389,7 +389,7 @@ userController.post('/login', function(req, res) {
       expiresIn: 86400 // expires in 24 hours
     });
     
-    res.status(200).send({ auth: true, token: token });
+    res.status(200).send({ auth: true, token: token, message: user.UID });
   });
   
 });

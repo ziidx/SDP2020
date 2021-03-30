@@ -29,6 +29,6 @@ const MemberSchema = new mongoose.Schema({
   License: { type: String, required: true, select: false, set: encrypt, get: decrypt },
   Expiry: { type: String, required: true, select: false, set: encrypt, get: decrypt },
   CHECKSUM: { type: String, required: true, select: false }
-},{toJSON: {getters: true}});
+},{toObject : {getters: true},toJSON: {getters: true}});
 
 module.exports = mongoose.model('Members', MemberSchema);

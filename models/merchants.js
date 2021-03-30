@@ -29,6 +29,6 @@ const MerchantSchema = new mongoose.Schema({
   Expiry: { type: String, required: true, select: false, set: encrypt, get: decrypt },
   Organization: { type: String, required: true, select: false, set: encrypt, get: decrypt},
   CHECKSUM: { type: String, required: true, select: false }
-},{toJSON: {getters: true}});
+},{toObject : {getters: true},toJSON: {getters: true}});
 
 module.exports = mongoose.model('Merchants', MerchantSchema);
