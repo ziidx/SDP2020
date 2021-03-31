@@ -5,24 +5,20 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const accMake = ({history}) => {
-  const [uid, onChangeU] = React.useState('');
+  const [username, onChangeU] = React.useState('');
+  const [password, onChangeP] = React.useState('');
   const [name, onChangeN] = React.useState('');
-  const [age, onChangeA] = React.useState('');
-  const [license, onChangeL] = React.useState('');
-  const [expiry, onChangeE] = React.useState('');
-  const [errMsg, setErrMsg] = React.useState('');
-
 
   const registerMem = async () => {
-    setErrMsg('');
-
     try{
-      const response = await axios.post('http://3a43e6f2bd15.ngrok.io/register', {
-        UID: uid,
+      const response = await axios.post('http://27d0947af10c.ngrok.io/register', {
+        username: username,
+        password: password,
+        UID: JSON.stringify(Math.floor(Math.random() * 100)),
         Name: name,
-        Age: age,
-        License: license,
-        Expiry: expiry,
+        Age: JSON.stringify(Math.floor(Math.random() * 100)),
+        License: JSON.stringify(Math.floor(Math.random() * 1000)),
+        Expiry: JSON.stringify(Math.floor(Math.random() * 1000)),
       })
 
       alert(JSON.stringify(response.data.message));
@@ -30,7 +26,7 @@ const accMake = ({history}) => {
     }
 
     catch (error) {
-      setErrMsg(error);
+      alert(error.response.data);
     }
   }
 
@@ -44,52 +40,36 @@ const accMake = ({history}) => {
         <View>
           <TextInput
             style={styles.inputBar}
-            placeholder={'Choose UID'}
+            placeholder={'Choose Username'}
+            placeholderTextColor="gray"
             autoCapitalize="none"
             autoCompleteType="off"
             autoCorrect={false}
             onChangeText = {(text) => onChangeU(text)}
-            value = {uid}
+            value = {username}
+          />
+
+          <TextInput
+            style={styles.inputBar}
+            placeholder={'Choose Password'}
+            placeholderTextColor="gray"
+            autoCapitalize="none"
+            autoCompleteType="off"
+            autoCorrect={false}
+            secureTextEntry
+            onChangeText = {(text) => onChangeP(text)}
+            value = {password}
           />
 
           <TextInput
             style={styles.inputBar}
             placeholder={'Name'}
+            placeholderTextColor="gray"
             autoCapitalize="none"
             autoCompleteType="off"
             autoCorrect={false}
             onChangeText = {(text) => onChangeN(text)}
             value = {name}
-          />
-
-          <TextInput
-            style={styles.inputBar}
-            placeholder={'Age'}
-            autoCapitalize="none"
-            autoCompleteType="off"
-            autoCorrect={false}
-            onChangeText = {(text) => onChangeA(text)}
-            value = {age}
-          />
-
-          <TextInput
-            style={styles.inputBar}
-            placeholder={'License Number'}
-            autoCapitalize="none"
-            autoCompleteType="off"
-            autoCorrect={false}
-            onChangeText = {(text) => onChangeL(text)}
-            value = {license}
-          />
-
-          <TextInput
-            style={styles.inputBar}
-            placeholder={'License Expiration Date'}
-            autoCapitalize="none"
-            autoCompleteType="off"
-            autoCorrect={false}
-            onChangeText = {(text) => onChangeE(text)}
-            value = {expiry}
           />
 
           <TouchableOpacity
@@ -98,15 +78,13 @@ const accMake = ({history}) => {
             <Text> Register Member </Text>
           </TouchableOpacity>
 
-
           <TouchableOpacity
             style={styles.buttonStyle} 
             onPress = {() => history.push("/")}>
             <Text> Go to Home Page </Text> 
           </TouchableOpacity>
         </View>
-
-      {errMsg ? <Text style= {styles.header}>{errMsg}</Text> : null}
+      
     </View>
   )
 };

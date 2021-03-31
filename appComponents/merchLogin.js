@@ -6,25 +6,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const merchLogin = ({history}) => {
   const [username, onChangeN] = React.useState('');
-  const [errMsg, setErrMsg] = React.useState('');
 
   const loginMerch = async () => {
-    setErrMsg('');
-
     try{
-      const response = await axios.post('https://3a43e6f2bd15.ngrok.io/login', {
-        Name: username
+      const response = await axios.post('http://27d0947af10c.ngrok.io/login', {
+        username: username
       })
       
-      await AsyncStorage.setItem('JWT', response.data.token);
-      
-      if(await AsyncStorage.getItem('JWT')){
-        history.push('/merchProfile');
-      }
+      await AsyncStorage.setItem('merchJWT', response.data.token);
+      history.push('/merchProfile');
     }
 
     catch (error) {
-      setErrMsg(error);
+      alert(error.response.data);
     }
   }
 
@@ -39,6 +33,7 @@ const merchLogin = ({history}) => {
           <TextInput
             style={styles.inputBar}
             placeholder={'Username'}
+            placeholderTextColor="gray"
             autoCapitalize="none"
             autoCompleteType="off"
             autoCorrect={false}
@@ -59,7 +54,6 @@ const merchLogin = ({history}) => {
           </TouchableOpacity>
         </View>
 
-      {errMsg ? <Text style= {styles.header}>{errMsg}</Text> : null}
     </View>
   );
 }

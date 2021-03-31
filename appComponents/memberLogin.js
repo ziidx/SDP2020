@@ -6,25 +6,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const memLogin = ({history}) => {
   const [username, onChangeUserN] = React.useState('');
-  const [errMsg, setErrMsg] = React.useState('');
 
   const loginMem = async () => {
-    setErrMsg('');
-
     try{
-      const response = await axios.post('http://3a43e6f2bd15.ngrok.io/login', {
-        Name: username
+      const response = await axios.post('http://27d0947af10c.ngrok.io/login', {
+        username: username
       })
-
-      await AsyncStorage.setItem('JWT', response.data.token);
-
-      if(await AsyncStorage.getItem('JWT')){
-        history.push('/memProfile');
-      }
+      await AsyncStorage.setItem('memJWT', response.data.token);
+      history.push('/memProfile');
     }
 
     catch (error) {
-      setErrMsg(error);
+      alert(error.response.data);
     }
   }
 
@@ -38,7 +31,8 @@ const memLogin = ({history}) => {
         <View>
           <TextInput
             style={styles.inputBar}
-            placeholder={'Name'}
+            placeholder={'Username'}
+            placeholderTextColor="gray"
             autoCapitalize="none"
             autoCompleteType="off"
             autoCorrect={false}
@@ -60,7 +54,6 @@ const memLogin = ({history}) => {
           </TouchableOpacity>
         </View>
 
-        {errMsg ? <Text style= {styles.header}>{errMsg}</Text> : null}
     </View>
   );
 }

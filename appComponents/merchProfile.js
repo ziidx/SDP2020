@@ -2,36 +2,9 @@ import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import styles from './compStyles';
 import axios from 'axios';
-
-
 import NfcManager, {NfcEvents} from 'react-native-nfc-manager';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// const testGetCall = () => {
-//   axios
-//     .get('https://jsonplaceholder.typicode.com/posts/1')
-//     .then(function (response) {
-//       // handle success
-//       alert(JSON.stringify(response.data));
-//     })
-//     .catch(function (error) {
-//       // handle error
-//       alert(error.message);
-//     })
-// };
-
-/*
-const getDataUsingAsyncAwaitGetCall = async () => {
-  try {
-    const response = await axios.get(
-      'https://jsonplaceholder.typicode.com/posts/2',
-    );
-    alert(JSON.stringify(response.data));
-  } catch (error) {
-    // handle error
-    alert(error.message);
-  }
-};
-*/
 
 function NFCSetup(){
   initNfc();
@@ -93,89 +66,45 @@ async function initNfc() {
   await NfcManager.start();
 }
 
-const testPostCall = () => {
-  axios
-    .post('https://jsonplaceholder.typicode.com/posts', {
-      title: 'test',
-      body: 'test',
-      userId: 1,
-    })
-    .then(function (response) {
-      // handle success
-      alert(JSON.stringify(response.data));
-    })
-    .catch(function (error) {
-      // handle error
-      alert(error.message);
-    });
-};
+const testValidJWTMerch = async () => {
+  try{
+    const authHeader = {'x-access-token': await AsyncStorage.getItem('merchJWT')};
+    const response = await axios.get('http://27d0947af10c.ngrok.io/userTest', {headers: authHeader });
+    alert('id is ' + JSON.stringify(response.data.id));
+  }
 
-/*
-const multipleRequestsInSingleCall = () => {
-  axios
-    .all([
-      axios
-        .get('https://jsonplaceholder.typicode.com/posts/1')
-        .then(function (response) {
-          // handle success
-          alert('Post 1 : ' + JSON.stringify(response.data));
-        }),
-      axios
-        .get('https://jsonplaceholder.typicode.com/posts/2')
-        .then(function (response) {
-          // handle success
-          alert('Post 2 : ' + JSON.stringify(response.data));
-        }),
-    ])
-    .then(
-      axios.spread(function (acct, perms) {
-        // Both requests are now complete
-        alert('Both requests are now complete');
-      }),
-    );
-};
-*/
+  catch (error) {
+    alert(JSON.stringify(error.response.data.message));
+  }
+}
+
 
 const merchProfile = ({history}) => {
+  const logOut = async () => {
+    try{
+      await AsyncStorage.removeItem('merchJWT');
+      history.push('/');
+    }
+    
+    catch (error) {
+      alert(error.response.data);
+    }
+  }
+
 
   return(
     <View>
       <Text style={styles.header}>
-        Welcome to the Test Credentials Page!
-      </Text>
-
-      <Text>
-        Press the buttons below to see your credentials!
+        Welcome to the Merchant Profile Page!
       </Text>
 
       <View>
         <TouchableOpacity
         style={styles.buttonStyle}
-        onPress={testGetCall}>
-          <Text> Test GET Request </Text>
+        onPress={testValidJWTMerch}>
+          <Text> Test JWT Authentication </Text>
         </TouchableOpacity>
 
-        {/*}
-        <TouchableOpacity
-        style={styles.buttonStyle}
-        onPress={getDataUsingAsyncAwaitGetCall}>
-          <Text> Test GET with Async Await </Text>
-        </TouchableOpacity>
-        */}
-
-        <TouchableOpacity
-        style={styles.buttonStyle}
-        onPress={testPostCall}>
-          <Text> Test POST </Text>
-        </TouchableOpacity>
-
-        {/*
-        <TouchableOpacity
-        style={styles.buttonStyle}
-        onPress={multipleRequestsInSingleCall}>
-          <Text> Test Concurrent Requests </Text>
-        </TouchableOpacity>
-        */}
         <TouchableOpacity
           style={styles.buttonStyle} 
           onPress = {NFCSetup}> 
@@ -184,8 +113,8 @@ const merchProfile = ({history}) => {
 
         <TouchableOpacity
           style={styles.buttonStyle}
-          onPress= {() => history.push("/")}>
-          <Text> Back to Homepage </Text>
+          onPress= {logOut}>
+          <Text> Log Out </Text>
         </TouchableOpacity>
       </View>
 

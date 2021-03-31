@@ -19,7 +19,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         width: 300, 
         margin: 10, 
-        padding: 8
+        padding: 8,
+        color: 'black'
     },
     buttonStyle: {
     alignItems: 'center',

@@ -3,6 +3,7 @@ import {View, Text, TouchableOpacity} from 'react-native';
 import styles from './compStyles';
 
 const welcomePage = ({history}) => {
+  
   return (
   <View>
     <Text style={styles.header}>
@@ -31,11 +32,7 @@ const welcomePage = ({history}) => {
         onPress = {() => history.push("/accountCreation")}> 
         <Text> Create an Account </Text>
       </TouchableOpacity>
-      <TouchableOpacity
-          style={styles.buttonStyle} 
-          onPress = {NFCSetup}> 
-          <Text> NFC </Text>
-        </TouchableOpacity>
+      
     </View>
     
   </View>
