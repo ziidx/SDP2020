@@ -4,15 +4,22 @@ import styles from './compStyles';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+export const memUID = {
+  id: ''
+}
+
 const memLogin = ({history}) => {
   const [username, onChangeUserN] = React.useState('');
 
   const loginMem = async () => {
     try{
-      const response = await axios.post('http://27d0947af10c.ngrok.io/login', {
+      const response = await axios.post('http://d1340493a24f.ngrok.io/login', {
         username: username
       })
+      console.log(memUID.id);
       await AsyncStorage.setItem('memJWT', response.data.token);
+      memUID.id = response.data.message;
+      console.log(memUID.id);
       history.push('/memProfile');
     }
 

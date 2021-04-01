@@ -3,9 +3,10 @@ import {View, Text, TouchableOpacity} from 'react-native';
 import styles from './compStyles';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {memUID} from './memberLogin';
 
 
-function permission(){
+function permission (){
   console.log("Hello");
   //establish get connection with backend API
 
@@ -82,8 +83,9 @@ function disagree(){
 const testValidJWTMem = async () => {
   try{
     const authHeader = {'x-access-token': await AsyncStorage.getItem('memJWT')};
-    const response = await axios.get('http://27d0947af10c.ngrok.io/userTest', {headers: authHeader });
+    const response = await axios.get('http://d1340493a24f.ngrok.io/userTest', {headers: authHeader });
     alert('id is ' + JSON.stringify(response.data.id));
+    console.log(memUID.id);
   }
 
   catch (error) {
@@ -96,6 +98,8 @@ const memProfile = ({history}) => {
   const logOut = async () => {
     try{
       await AsyncStorage.removeItem('memJWT');
+      memUID.id = ''
+      console.log(memUID.id);
       history.push('/');
     }
     

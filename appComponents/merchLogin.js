@@ -4,8 +4,18 @@ import styles from './compStyles';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+export const merchUID = {
+  id: ''
+};
+
 const merchLogin = ({history}) => {
   const [username, onChangeN] = React.useState('');
+
+  const testLoginMerch = () => {
+    merchUID.id = '5';
+    history.push('/merchProfile');
+  }
+
 
   const loginMerch = async () => {
     try{
@@ -14,6 +24,7 @@ const merchLogin = ({history}) => {
       })
       
       await AsyncStorage.setItem('merchJWT', response.data.token);
+      //await AsyncStorage.setItem('merchUID', response.data.message);
       history.push('/merchProfile');
     }
 
@@ -43,7 +54,7 @@ const merchLogin = ({history}) => {
           
           <TouchableOpacity
             style={styles.buttonStyle}
-            onPress = {() => history.push("/merchProfile")}>
+            onPress = {testLoginMerch}>
             <Text> Login </Text>
           </TouchableOpacity>
 

@@ -4,7 +4,7 @@ import styles from './compStyles';
 import axios from 'axios';
 import NfcManager, {NfcEvents} from 'react-native-nfc-manager';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import {merchUID} from './merchLogin'
 
 function NFCSetup(){
   initNfc();
@@ -25,7 +25,8 @@ function readNdef() {
     NfcManager.setEventListener(NfcEvents.DiscoverTag, (tag) => {
       tagFound = tag;
       resolve(tagFound);
-      var memberID = String.fromCharCode(...tagFound.ndefMessage[0].payload);
+      const memberID = String.fromCharCode(...tagFound.ndefMessage[0].payload);
+      const question = "Are you of legal age";
 
       //establish get connection with backend API
 
@@ -36,17 +37,22 @@ function readNdef() {
 
           Please make the axios call below
       */
+      console.log(memberID);
+      console.log(question);
+      console.log('sending get request');
       
-      // axios
-//     .get('https://jsonplaceholder.typicode.com/posts/1')
-//     .then(function (response) {
-//       // handle success
-//       alert(JSON.stringify(response.data));
-//     })
-//     .catch(function (error) {
-//       // handle error
-//       alert(error.message);
-//     })
+      axios.get('http://d1340493a24f.ngrok.io/data-request', { params: {
+        member_ID: memberID,
+        merchant_ID: merchID,
+        question: question
+      }})
+      .then(function (response){
+        console.log(response.data);
+      })
+      .catch(function (error){
+        console.log(error.message);
+      });
+      console.log('get request sent');
 
       NfcManager.unregisterTagEvent().catch(() => 0);
     });
@@ -69,7 +75,7 @@ async function initNfc() {
 const testValidJWTMerch = async () => {
   try{
     const authHeader = {'x-access-token': await AsyncStorage.getItem('merchJWT')};
-    const response = await axios.get('http://27d0947af10c.ngrok.io/userTest', {headers: authHeader });
+    const response = await axios.get('http://d1340493a24f.ngrok.io/userTest', {headers: authHeader });
     alert('id is ' + JSON.stringify(response.data.id));
   }
 
