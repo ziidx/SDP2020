@@ -4,81 +4,22 @@ import styles from './compStyles';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {memUID} from './memberLogin';
+import Dialog, {
+  DialogTitle,
+  DialogContent,
+  DialogFooter,
+  DialogButton,
+  SlideAnimation,
+  ScaleAnimation,
+} from 'react-native-popup-dialog';
 
 
-function permission (){
-  console.log("Hello");
-  //establish get connection with backend API
-
-      /*
-          API to be called:  (get) /memberFE/permission
-          Query Params: memberUID(=you should receive this upon login as message))
-          Response: merchantid, question(=question provided in this set up is Are you legal)
-          error: message:'No info request found'
-
-          Please make the axios call below
-      */
-      
-      // axios
-//     .get('https://jsonplaceholder.typicode.com/posts/1')
-//     .then(function (response) {
-//       // handle success
-//       alert(JSON.stringify(response.data));
-//     })
-//     .catch(function (error) {
-//       // handle error
-//       alert(error.message);
-//     })
-
-
-
-  //After this call, you should basically initiate a popup/dialog box with 2 buttons: Yes to share info, No to deny info
-  //You can use the concept of states to manage this. The two methods below are for when those buttons are pushed
+export const merchUID = {
+  id: '',
+  question: ''
 }
 
-function agree(){
-  console.log("Hello1");
 
-  /*
-          API to be called:  (get) /dataprocessing
-          Query Params: merchantUID(you get this as response from permissions function above), memberUID(=you should receive this upon login as message), question(= You get this as response from permissions function above)
-          Response: 200 OK
-
-          Please make the axios call below
-      */
-      
-      // axios
-//     .get('https://jsonplaceholder.typicode.com/posts/1')
-//     .then(function (response) {
-//       // handle success
-//       alert(JSON.stringify(response.data));
-//     })
-//     .catch(function (error) {
-//       // handle error
-//       alert(error.m
-}
-
-function disagree(){
-    console.log("Hello2");
-
-  /*
-          API to be called:  (get) /denied
-          Query Params: merchantUID(you get this as response from permissions function above), memberUID(=you should receive this upon login as message), question(= You get this as response from permissions function above)
-          Response: 200 OK
-          
-          Please make the axios call below
-      */
-      
-      // axios
-//     .get('https://jsonplaceholder.typicode.com/posts/1')
-//     .then(function (response) {
-//       // handle success
-//       alert(JSON.stringify(response.data));
-//     })
-//     .catch(function (error) {
-//       // handle error
-//       alert(error.m
-}
 
 const testValidJWTMem = async () => {
   try{
@@ -108,6 +49,38 @@ const memProfile = ({history}) => {
     }
   }
 
+  function permission (){
+    console.log("Hello");
+  //establish get connection with backend API
+
+      /*
+          API to be called:  (get) /memberFE/permission
+          Query Params: memberUID(=you should receive this upon login as message))
+          Response: merchantid, question(=question provided in this set up is Are you legal)
+          error: message:'No info request found'
+
+          Please make the axios call below
+      */
+      
+      axios
+        .get('http://44e5e745b5bb.ngrok.io/memberFE/permission', {params: {
+          memberUID: memUID.id
+        }})
+        .then(function (response) {
+          merchUID.id = response.data.merchantid;
+          console.log('merchant uid retrieved');
+          merchUID.question = response.data.question;
+          console.log('question: ' + response.data.question);
+          history.push('/memResponse');
+        })
+        .catch(function (error) {
+          alert(error.message);
+        });
+    }
+
+
+  //After this call, you should basically initiate a popup/dialog box with 2 buttons: Yes to share info, No to deny info
+  //You can use the concept of states to manage this. The two methods below are for when those buttons are pushed
 
   return(
     <View>

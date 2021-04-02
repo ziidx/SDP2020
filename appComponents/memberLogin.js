@@ -11,9 +11,10 @@ export const memUID = {
 const memLogin = ({history}) => {
   const [username, onChangeUserN] = React.useState('');
 
+  /*
   const loginMem = async () => {
     try{
-      const response = await axios.post('http://d1340493a24f.ngrok.io/login', {
+      const response = await axios.post('http://127.0.0.1:3000/login', {
         username: username
       })
       console.log(memUID.id);
@@ -26,6 +27,21 @@ const memLogin = ({history}) => {
     catch (error) {
       alert(error.response.data);
     }
+  }
+  */
+
+  const loginTest = () => {
+    console.log('loginTest')
+    axios.post('http://44e5e745b5bb.ngrok.io/login', {
+      username: username
+    })
+    .then(function (response) {
+      memUID.id = response.data.message;
+      history.push('/memProfile');
+    })
+    .catch(function (error) {
+      alert(error);
+    })
   }
 
 
@@ -50,7 +66,7 @@ const memLogin = ({history}) => {
 
           <TouchableOpacity
             style={styles.buttonStyle}
-            onPress = {loginMem}>
+            onPress = {loginTest}>
             <Text> Login </Text>
           </TouchableOpacity>
 

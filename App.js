@@ -8,6 +8,7 @@ import merchLogin from './appComponents/merchLogin';
 import accMake from './appComponents/accMake';
 import memProfile from './appComponents/memProfile';
 import merchProfile from './appComponents/merchProfile';
+import memResponse from './appComponents/memResponse';
 
 import 
 {
@@ -36,6 +37,7 @@ const App = () => {
         <Route path="/accountCreation" component={accMake} />
         <Route path="/memProfile" component={memProfile} />
         <Route path="/merchProfile" component={merchProfile} />
+        <Route path="/memResponse" component={memResponse} />
       </Switch>
     </View>
   </NativeRouter>
