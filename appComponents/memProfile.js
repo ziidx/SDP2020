@@ -2,8 +2,9 @@ import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import styles from './compStyles';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {memUID} from './memberLogin';
+import {memData} from './memberLogin';
+
+/*
 import Dialog, {
   DialogTitle,
   DialogContent,
@@ -12,41 +13,29 @@ import Dialog, {
   SlideAnimation,
   ScaleAnimation,
 } from 'react-native-popup-dialog';
+*/
 
+const testValidJWTMem = () => {
+    const authHeader = {'x-access-token': memData.token};
 
-export const merchUID = {
-  id: '',
-  question: ''
-}
-
-
-
-const testValidJWTMem = async () => {
-  try{
-    const authHeader = {'x-access-token': await AsyncStorage.getItem('memJWT')};
-    const response = await axios.get('http://d1340493a24f.ngrok.io/userTest', {headers: authHeader });
-    alert('id is ' + JSON.stringify(response.data.id));
-    console.log(memUID.id);
-  }
-
-  catch (error) {
-    alert(JSON.stringify(error.response.data));
-  }
+    axios.get('http://70a8fe88caf7.ngrok.io/userTest', {headers: authHeader })
+    .then(function (response) {
+      alert('id is ' + JSON.stringify(response.data.id));
+    })
+    .catch(function (error) {
+      alert(JSON.stringify(error.data));
+    })
 }
 
 
 const memProfile = ({history}) => {
-  const logOut = async () => {
-    try{
-      await AsyncStorage.removeItem('memJWT');
-      memUID.id = ''
-      console.log(memUID.id);
+  const logOut = () => {
+      memData.id = '';
+      memData.question = '';
+      memData.token = '';
+      memData.merchUID = '';
+
       history.push('/');
-    }
-    
-    catch (error) {
-      alert(error.response.data);
-    }
   }
 
   function permission (){
@@ -63,20 +52,20 @@ const memProfile = ({history}) => {
       */
       
       axios
-        .get('http://44e5e745b5bb.ngrok.io/memberFE/permission', {params: {
-          memberUID: memUID.id
+        .get('http://70a8fe88caf7.ngrok.io/memberFE/permission', {params: {
+          memberUID: memData.id
         }})
         .then(function (response) {
-          merchUID.id = response.data.merchantid;
-          console.log('merchant uid retrieved');
-          merchUID.question = response.data.question;
-          console.log('question: ' + response.data.question);
+          memData.merchUID = '5';
+          console.log('merchant uid retrieved: ' + memData.merchUID);
+          memData.question = 'Are you legal?';
+          console.log('question: ' + memData.question);
           history.push('/memResponse');
         })
         .catch(function (error) {
           alert(error.message);
         });
-    }
+  }
 
 
   //After this call, you should basically initiate a popup/dialog box with 2 buttons: Yes to share info, No to deny info

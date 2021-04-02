@@ -2,41 +2,24 @@ import React from 'react';
 import {View, Text, TouchableOpacity, TextInput} from 'react-native';
 import styles from './compStyles';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const memUID = {
-  id: ''
+export const memData = {
+  id: '',
+  question: '',
+  token: '',
+  merchUID: ''
 }
 
 const memLogin = ({history}) => {
   const [username, onChangeUserN] = React.useState('');
 
-  /*
-  const loginMem = async () => {
-    try{
-      const response = await axios.post('http://127.0.0.1:3000/login', {
-        username: username
-      })
-      console.log(memUID.id);
-      await AsyncStorage.setItem('memJWT', response.data.token);
-      memUID.id = response.data.message;
-      console.log(memUID.id);
-      history.push('/memProfile');
-    }
-
-    catch (error) {
-      alert(error.response.data);
-    }
-  }
-  */
-
   const loginTest = () => {
-    console.log('loginTest')
-    axios.post('http://44e5e745b5bb.ngrok.io/login', {
+    axios.post('http://70a8fe88caf7.ngrok.io/login', {
       username: username
     })
     .then(function (response) {
-      memUID.id = response.data.message;
+      memData.id = response.data.message;
+      memData.token = response.data.token;
       history.push('/memProfile');
     })
     .catch(function (error) {

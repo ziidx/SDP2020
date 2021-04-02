@@ -4,7 +4,7 @@ import styles from './compStyles';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const merchUID = {
+export const merchData = {
   id: ''
 };
 
@@ -12,7 +12,7 @@ const merchLogin = ({history}) => {
   const [username, onChangeN] = React.useState('');
 
   const testLoginMerch = () => {
-    merchUID.id = '5';
+    merchData.id = '5';
     history.push('/merchProfile');
   }
 

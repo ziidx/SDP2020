@@ -4,7 +4,7 @@ import styles from './compStyles';
 import axios from 'axios';
 import NfcManager, {NfcEvents} from 'react-native-nfc-manager';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {merchUID} from './merchLogin'
+import {merchData} from './merchLogin'
 
 function NFCSetup(){
   initNfc();

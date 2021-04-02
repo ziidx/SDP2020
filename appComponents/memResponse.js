@@ -2,9 +2,7 @@ import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import styles from './compStyles';
 import axios from 'axios';
-import {memUID} from './memberLogin';
-import {merchUID} from './memProfile';
-
+import {memData} from './memberLogin';
 
 
 
@@ -21,10 +19,10 @@ const memResponse = ({history}) => {
       	*/
       
      	axios
-     		.get('http://44e5e745b5bb.ngrok.io/dataprocessing', {params: {
-    			merchantUID: merchUID.id,
-    			memberUID: memUID.id,
-    			question: merchUID.question
+     		.get('http://70a8fe88caf7.ngrok.io/dataprocessing', {params: {
+    			merchantUID: memData.merchUID,
+    			memberUID: memData.id,
+    			question: memData.question
     		}})
     		.then(function (response) {
     			console.log('agreed to answer question: ' + question);
@@ -49,9 +47,9 @@ const memResponse = ({history}) => {
       
       	axios
     		.get('/denied', {params: {
-    			merchantUID: merchUID.id,
-    			memberUID: memUID.id,
-    			question: merchUID.question
+    			merchantUID: memData.merchUID,
+    			memberUID: memData.id,
+    			question: memData.question
     		}})
     		.then(function (response) {
     			console.log('refuse to answer question: ' + question);
