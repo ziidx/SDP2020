@@ -14,7 +14,7 @@ const memLogin = ({history}) => {
   const [username, onChangeUserN] = React.useState('');
 
   const loginTest = () => {
-    axios.post('http://70a8fe88caf7.ngrok.io/login', {
+    axios.post('http://4c81b6f1c743.ngrok.io/login', {
       username: username
     })
     .then(function (response) {
@@ -23,7 +23,7 @@ const memLogin = ({history}) => {
       history.push('/memProfile');
     })
     .catch(function (error) {
-      alert(error);
+      alert(error.response.data);
     })
   }
 

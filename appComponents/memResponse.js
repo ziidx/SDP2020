@@ -8,8 +8,7 @@ import {memData} from './memberLogin';
 
 const memResponse = ({history}) => {
  	function agree(){
-  		console.log("Hello1");
-
+  		//console.log("Hello1");
   		/*
           API to be called:  (get) /dataprocessing
           Query Params: merchantUID(you get this as response from permissions function above), memberUID(=you should receive this upon login as message), question(= You get this as response from permissions function above)
@@ -18,16 +17,17 @@ const memResponse = ({history}) => {
           Please make the axios call below
       	*/
       
-     	axios
-     		.get('http://70a8fe88caf7.ngrok.io/dataprocessing', {params: {
+     	axios.get('http://4c81b6f1c743.ngrok.io/dataprocessing', {params: {
     			merchantUID: memData.merchUID,
     			memberUID: memData.id,
     			question: memData.question
     		}})
     		.then(function (response) {
-    			console.log('agreed to answer question: ' + question);
-      			alert(JSON.stringify(response.data));
-      			history.push('/memProfile');
+    			alert('agreed to answer question: ' + memData.question);
+      			//alert(JSON.stringify(response.data));
+      			memData.merchUID = '';
+				memData.question = '';
+				history.push('/memProfile');
     		})
     		.catch(function (error) {
       			alert(error.message);
@@ -35,7 +35,7 @@ const memResponse = ({history}) => {
 	}
 
 	function disagree(){
-    	console.log("Hello2");
+    	//console.log("Hello2");
 
   		/*
           API to be called:  (get) /denied
@@ -46,14 +46,16 @@ const memResponse = ({history}) => {
       	*/
       
       	axios
-    		.get('/denied', {params: {
+    		.get('http://4c81b6f1c743.ngrok.io/denied', {params: {
     			merchantUID: memData.merchUID,
     			memberUID: memData.id,
     			question: memData.question
     		}})
     		.then(function (response) {
-    			console.log('refuse to answer question: ' + question);
-      			alert(JSON.stringify(response.data));
+    			alert('refuse to answer question: ' + memData.question);
+      			//alert(JSON.stringify(response.data));
+				memData.merchUID = '';
+				memData.question = '';
       			history.push('/memProfile');
     		})
     		.catch(function (error) {

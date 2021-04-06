@@ -18,7 +18,7 @@ import Dialog, {
 const testValidJWTMem = () => {
     const authHeader = {'x-access-token': memData.token};
 
-    axios.get('http://70a8fe88caf7.ngrok.io/userTest', {headers: authHeader })
+    axios.get('http://4c81b6f1c743.ngrok.io/userTest', {headers: authHeader })
     .then(function (response) {
       alert('id is ' + JSON.stringify(response.data.id));
     })
@@ -39,7 +39,6 @@ const memProfile = ({history}) => {
   }
 
   function permission (){
-    console.log("Hello");
   //establish get connection with backend API
 
       /*
@@ -52,14 +51,12 @@ const memProfile = ({history}) => {
       */
       
       axios
-        .get('http://70a8fe88caf7.ngrok.io/memberFE/permission', {params: {
+        .get('http://4c81b6f1c743.ngrok.io/memberFE/permission', {params: {
           memberUID: memData.id
         }})
         .then(function (response) {
           memData.merchUID = '5';
-          console.log('merchant uid retrieved: ' + memData.merchUID);
           memData.question = 'Are you legal?';
-          console.log('question: ' + memData.question);
           history.push('/memResponse');
         })
         .catch(function (error) {

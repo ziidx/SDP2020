@@ -2,32 +2,28 @@ import React from 'react';
 import {View, Text, TextInput, TouchableOpacity} from 'react-native';
 import styles from './compStyles';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const accMake = ({history}) => {
   const [username, onChangeU] = React.useState('');
   const [password, onChangeP] = React.useState('');
   const [name, onChangeN] = React.useState('');
 
-  const registerMem = async () => {
-    try{
-      const response = await axios.post('http://27d0947af10c.ngrok.io/register', {
-        username: username,
-        password: password,
-        UID: JSON.stringify(Math.floor(Math.random() * 100)),
-        Name: name,
-        Age: JSON.stringify(Math.floor(Math.random() * 100)),
-        License: JSON.stringify(Math.floor(Math.random() * 1000)),
-        Expiry: JSON.stringify(Math.floor(Math.random() * 1000)),
-      })
+  const registerMem = () => {
+    axios.post('http://4c81b6f1c743.ngrok.io/register', {
+      username: username,
+      password: password,
+      UID: JSON.stringify(Math.floor(Math.random() * 100)),
+      Name: name,
+      Age: JSON.stringify(Math.floor(Math.random() * 100)),
+      License: JSON.stringify(Math.floor(Math.random() * 1000)),
+      Expiry: JSON.stringify(Math.floor(Math.random() * 1000)),
+    }).then(function (response) {
+        alert(JSON.stringify(response.data.message)); 
+        history.push('/');
+    }).catch(function (error) {
+        alert(JSON.stringify(error.data));
+    })
 
-      alert(JSON.stringify(response.data.message));
-      history.push('/');
-    }
-
-    catch (error) {
-      alert(error.response.data);
-    }
   }
 
 

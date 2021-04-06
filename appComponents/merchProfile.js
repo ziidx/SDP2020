@@ -3,7 +3,6 @@ import {View, Text, TouchableOpacity} from 'react-native';
 import styles from './compStyles';
 import axios from 'axios';
 import NfcManager, {NfcEvents} from 'react-native-nfc-manager';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {merchData} from './merchLogin'
 
 function NFCSetup(){
@@ -41,7 +40,7 @@ function readNdef() {
       console.log(question);
       console.log('sending get request');
       
-      axios.get('http://d1340493a24f.ngrok.io/data-request', { params: {
+      axios.get('http://4c81b6f1c743.ngrok.io/data-request', { params: {
         member_ID: memberID,
         merchant_ID: merchID,
         question: question
@@ -72,29 +71,22 @@ async function initNfc() {
   await NfcManager.start();
 }
 
-const testValidJWTMerch = async () => {
-  try{
-    const authHeader = {'x-access-token': await AsyncStorage.getItem('merchJWT')};
-    const response = await axios.get('http://d1340493a24f.ngrok.io/userTest', {headers: authHeader });
+const testValidJWTMerch = () => {
+  const authHeader = {'x-access-token': merchData.token};
+  axios.get('http://4c81b6f1c743.ngrok.io/userTest', {headers: authHeader })
+  .then(function (response) {
     alert('id is ' + JSON.stringify(response.data.id));
-  }
-
-  catch (error) {
+  })
+  .catch(function (error) {
     alert(JSON.stringify(error.response.data.message));
-  }
+  });
 }
 
 
 const merchProfile = ({history}) => {
-  const logOut = async () => {
-    try{
-      await AsyncStorage.removeItem('merchJWT');
+  const logOut = () => {
+      merchData.id = '';
       history.push('/');
-    }
-    
-    catch (error) {
-      alert(error.response.data);
-    }
   }
 
 
