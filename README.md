@@ -58,16 +58,25 @@ Please make sure you use the correct Android SDK path. You can find the actual l
 4 Setting up Device+Running the App
 
 Plug in USB cable connecting your PC to your phone
+
 Go to Developer Options and enable USB debugging
+
 Check the manufacturer code by using $ lsusb
+
 You should be able to see your device if its connected proceeded by an 8 digit ID separated by a colon.
+
 Input the first four digits of the ID into udev rules by running
-    echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="22b8", MODE="0666", GROUP="plugdev"' | sudo tee /etc/udev/rules.d/51-android-usb.rules
-    Replace idVendor with first 4 digits of the ID.
+
+echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="22b8", MODE="0666", GROUP="plugdev"' | sudo tee /etc/udev/rules.d/51-android-usb.rules
+
+Replace idVendor with first 4 digits of the ID.
 
 Run $ adb devices, to check if the device is installed. Seeing "device" in the right column means the device is connected. You must have only one device connected at a time.
 
-Now navigate to the folder containing appUI files from github, and run $npm install to get all the node_modules. Then run "$npx react-native start" to start the metro bundler
+Now navigate to the folder containing appUI files from github, and run $npm install to get all the node_modules. 
+
+Then run "$npx react-native start" to start the metro bundler
+
 Once metro has been started and the phone connected, open a separate terminal and run "npx react-native run-android" to install and launch the app on your phone.
 
 Note: This is just for testing the app on a physical phone, https://reactnative.dev/docs/environment-setup has more details for installing and running on an android emulator.
