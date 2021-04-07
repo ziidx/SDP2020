@@ -41,9 +41,13 @@ Finally, click "Apply" to download and install the Android SDK and related build
 Add the following lines to your $HOME/.bash_profile or $HOME/.bashrc (if you are using zsh then ~/.zprofile or ~/.zshrc) config file:
 
 export ANDROID_HOME=$HOME/Android/Sdk
+
 export PATH=$PATH:$ANDROID_HOME/emulator
+
 export PATH=$PATH:$ANDROID_HOME/tools
+
 export PATH=$PATH:$ANDROID_HOME/tools/bin
+
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 
 Type source $HOME/.bash_profile for bash or source $HOME/.zprofile to load the config into your current shell. Verify that ANDROID_HOME has been set by running echo $ANDROID_HOME and the appropriate directories have been added to your path by running echo $PATH.
