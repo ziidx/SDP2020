@@ -3,7 +3,9 @@ Setup and Install React-Native App
 Have or install Node and NPM, at least Node 10 or newer.
 
 1 Install JDK 8 
+
 sudo apt-get install openjdk-8-jre
+
 sudo apt-get install openjdk-8-jdk
 
 
