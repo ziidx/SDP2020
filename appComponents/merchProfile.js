@@ -4,6 +4,19 @@ import styles from './compStyles';
 import axios from 'axios';
 import NfcManager, {NfcEvents} from 'react-native-nfc-manager';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import HCESession, { NFCContentType, NFCTagType4 } from 'react-native-hce';
+
+let simulation;
+ 
+const startSimulation = async () => {
+    const tag = new NFCTagType4(NFCContentType.Text, "Hello world");
+    simulation = await (new HCESession(tag)).start();
+}
+ 
+function NFCSetup1(){
+  console.log("started simulation");
+  startSimulation();
+}
 
 function NFCSetup(){
   initNfc();
@@ -113,7 +126,7 @@ const merchProfile = ({history}) => {
 
         <TouchableOpacity
           style={styles.buttonStyle} 
-          onPress = {NFCSetup}> 
+          onPress = {NFCSetup1}> 
           <Text> NFC </Text>
         </TouchableOpacity>
 
