@@ -4,16 +4,6 @@ import styles from './compStyles';
 import axios from 'axios';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
-/*
-import Dialog, {
-  DialogTitle,
-  DialogContent,
-  DialogFooter,
-  DialogButton,
-  SlideAnimation,
-  ScaleAnimation,
-} from 'react-native-popup-dialog';
-*/
 
 const testValidJWTMem = async () => {
   try{
@@ -27,11 +17,6 @@ const testValidJWTMem = async () => {
     console.log(error);
   }
 }
-
-
-
-
-
 
 const memProfile = ({history}) => {
   const permission = async () => {
