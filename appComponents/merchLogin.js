@@ -2,19 +2,32 @@ import React from 'react';
 import {View, Text, TouchableOpacity, TextInput} from 'react-native';
 import styles from './compStyles';
 import axios from 'axios';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
-
-export const merchData = {
-  id: '',
-  token: ''
-};
 
 const merchLogin = ({history}) => {
   const [username, onChangeN] = React.useState('');
+  const [password, onChangeP] = React.useState('');
 
-  const testLoginMerch = () => {
-    merchData.id = '5';
-    history.push('/merchProfile');
+  const testLoginMerch = async () => {
+    try{
+      if(/^[a-zA-Z0-9]{3,20}$/.test(username)){
+        if(/^[a-zA-Z0-9!@#$%^&*]{8,30}$/.test(password)){
+          await EncryptedStorage.setItem('merchUID', '5');
+          history.push('/merchProfile');
+        }
+        else{
+          throw new Error('invalid password input');
+        } 
+      }
+      else{
+        throw new Error('invalid username input');
+      }
+    }
+
+    catch (error) {
+      alert(error);
+    }
   }
 
 
@@ -34,6 +47,18 @@ const merchLogin = ({history}) => {
             autoCorrect={false}
             onChangeText={(text) => onChangeN(text)}
             value = {username}
+          />
+
+          <TextInput
+            style={styles.inputBar}
+            placeholder={'Password'}
+            placeholderTextColor="gray"
+            autoCapitalize="none"
+            autoCompleteType="off"
+            autoCorrect={false}
+            onChangeText={(text) => onChangeP(text)}
+            value = {password}
+            secureTextEntry
           />
           
           <TouchableOpacity

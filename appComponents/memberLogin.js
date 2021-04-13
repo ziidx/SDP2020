@@ -2,29 +2,36 @@ import React from 'react';
 import {View, Text, TouchableOpacity, TextInput} from 'react-native';
 import styles from './compStyles';
 import axios from 'axios';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
-export const memData = {
-  id: '',
-  question: '',
-  token: '',
-  merchUID: ''
-}
 
 const memLogin = ({history}) => {
   const [username, onChangeUserN] = React.useState('');
+  const [password, onChangeP] = React.useState('');
 
-  const loginTest = () => {
-    axios.post('http://4c81b6f1c743.ngrok.io/login', {
-      username: username
-    })
-    .then(function (response) {
-      memData.id = response.data.message;
-      memData.token = response.data.token;
-      history.push('/memProfile');
-    })
-    .catch(function (error) {
-      alert(error.response.data);
-    })
+  const loginMem = async () => {
+    try{
+      if(/^[a-zA-Z0-9]{3,20}$/.test(username)){
+        if(/^[a-zA-Z0-9!@#$%^&*]{8,30}$/.test(password)){
+          const response = await axios.post('http://d8e3a82ea5c8.ngrok.io/login', {
+            username: username
+          })
+          await EncryptedStorage.setItem('noid_uid', response.data.message);
+          await EncryptedStorage.setItem('noid_token', response.data.token);
+          history.push('/memProfile')
+        }
+        else{
+          throw new Error('invalid password input');
+        } 
+      }
+      else{
+        throw new Error('invalid username input');
+      }
+    }
+
+    catch (error) {
+      alert(error);
+    }
   }
 
 
@@ -47,9 +54,21 @@ const memLogin = ({history}) => {
             keyboardType="email-address"
           />
 
+          <TextInput
+            style={styles.inputBar}
+            placeholder={'Password'}
+            placeholderTextColor="gray"
+            autoCapitalize="none"
+            autoCompleteType="off"
+            autoCorrect={false}
+            onChangeText={(text) => onChangeP(text)}
+            value={password}
+            secureTextEntry
+          />
+
           <TouchableOpacity
             style={styles.buttonStyle}
-            onPress = {loginTest}>
+            onPress = {loginMem}>
             <Text> Login </Text>
           </TouchableOpacity>
 

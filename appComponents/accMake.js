@@ -9,21 +9,41 @@ const accMake = ({history}) => {
   const [name, onChangeN] = React.useState('');
 
   const registerMem = () => {
-    axios.post('http://4c81b6f1c743.ngrok.io/register', {
-      username: username,
-      password: password,
-      UID: JSON.stringify(Math.floor(Math.random() * 100)),
-      Name: name,
-      Age: JSON.stringify(Math.floor(Math.random() * 100)),
-      License: JSON.stringify(Math.floor(Math.random() * 1000)),
-      Expiry: JSON.stringify(Math.floor(Math.random() * 1000)),
-    }).then(function (response) {
-        alert(JSON.stringify(response.data.message)); 
-        history.push('/');
-    }).catch(function (error) {
-        alert(JSON.stringify(error.data));
-    })
+    try{
+      if(/^[a-zA-Z0-9]{3,20}$/.test(username)){
+        if(/^[a-zA-Z0-9!@#$%^&*]{8,30}$/.test(password)){
+          if(/^[a-zA-Z -]{2,30}$/.test(name)){
+                axios.post('http://d8e3a82ea5c8.ngrok.io/register', {
+                  username: username,
+                  password: password,
+                  UID: JSON.stringify(Math.floor(Math.random() * 100)),
+                  Name: name,
+                  Age: JSON.stringify(Math.floor(Math.random() * 100)),
+                  License: JSON.stringify(Math.floor(Math.random() * 1000)),
+                  Expiry: JSON.stringify(Math.floor(Math.random() * 1000)),
+                }).then(function (response) {
+                  alert(JSON.stringify(response.data.message)); 
+                  history.push('/');
+                }).catch(function (error) {
+                  alert(error);
+                });
+          }
+          else{
+            throw new Error('invalid name input');
+          }
+        }
+        else{
+          throw new Error('invalid password input');
+        } 
+      }
+      else{
+        throw new Error('invalid username input');
+      }
+    }
 
+    catch (error){
+      alert(error);
+    }
   }
 
 

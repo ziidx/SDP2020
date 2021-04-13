@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import styles from './compStyles';
 import axios from 'axios';
-import {memData} from './memberLogin';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 /*
 import Dialog, {
@@ -15,58 +15,66 @@ import Dialog, {
 } from 'react-native-popup-dialog';
 */
 
-const testValidJWTMem = () => {
-    const authHeader = {'x-access-token': memData.token};
+const testValidJWTMem = async () => {
+  try{
+    const authHeader = {'x-access-token': await EncryptedStorage.getItem('noid_token')};
+    const response = await axios.get('http://d8e3a82ea5c8.ngrok.io/userTest', {headers: authHeader});
 
-    axios.get('http://4c81b6f1c743.ngrok.io/userTest', {headers: authHeader })
-    .then(function (response) {
-      alert('id is ' + JSON.stringify(response.data.id));
-    })
-    .catch(function (error) {
-      alert(JSON.stringify(error.data));
-    })
+    alert('JWT Verified!\n' + 'ID is ' + JSON.stringify(response.data.id));
+  }
+
+  catch (error) {
+    console.log(error);
+  }
 }
 
 
+
+
+
+
 const memProfile = ({history}) => {
-  const logOut = () => {
-      memData.id = '';
-      memData.question = '';
-      memData.token = '';
-      memData.merchUID = '';
-
-      history.push('/');
-  }
-
-  function permission (){
-  //establish get connection with backend API
+  const permission = async () => {
+    //establish get connection with backend API
 
       /*
-          API to be called:  (get) /memberFE/permission
-          Query Params: memberUID(=you should receive this upon login as message))
-          Response: merchantid, question(=question provided in this set up is Are you legal)
-          error: message:'No info request found'
+        API to be called:  (get) /memberFE/permission
+        Query Params: memberUID(=you should receive this upon login as message))
+        Response: merchantid, question(=question provided in this set up is Are you legal)
+        error: message:'No info request found'
 
-          Please make the axios call below
+        Please make the axios call below
       */
-      
-      axios
-        .get('http://4c81b6f1c743.ngrok.io/memberFE/permission', {params: {
-          memberUID: memData.id
-        }})
-        .then(function (response) {
-          memData.merchUID = '5';
-          memData.question = 'Are you legal?';
-          history.push('/memResponse');
-        })
-        .catch(function (error) {
-          alert(error.message);
-        });
+    try{
+      const response = await axios.get('http://d8e3a82ea5c8.ngrok.io/memberFE/permission', 
+        { params: { memberUID: await EncryptedStorage.getItem('noid_uid')}});
+    
+      await EncryptedStorage.setItem('merchUID', '5');
+      await EncryptedStorage.setItem('question', 'Hi Im Meat');
+
+      history.push('/memResponse');
+    }    
+
+    catch (error) {
+      console.log(error);
+    }
+  
+    //After this call, you should basically initiate a popup/dialog box with 2 buttons: Yes to share info, No to deny info
+    //You can use the concept of states to manage this. The two methods below are for when those buttons are pushed
+
   }
 
+  const logOut = async () => {
+    try{
+      await EncryptedStorage.clear();
+      history.push('/');
+    }
+    
+    catch (error) {
+      console.log(error);
+    }
+  }
 
-  //After this call, you should basically initiate a popup/dialog box with 2 buttons: Yes to share info, No to deny info
-  //You can use the concept of states to manage this. The two methods below are for when those buttons are pushed
 
   return(
     <View>

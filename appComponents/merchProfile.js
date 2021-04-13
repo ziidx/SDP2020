@@ -3,7 +3,7 @@ import {View, Text, TouchableOpacity} from 'react-native';
 import styles from './compStyles';
 import axios from 'axios';
 import NfcManager, {NfcEvents} from 'react-native-nfc-manager';
-import {merchData} from './merchLogin'
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 function NFCSetup(){
   initNfc();
@@ -71,22 +71,30 @@ async function initNfc() {
   await NfcManager.start();
 }
 
-const testValidJWTMerch = () => {
-  const authHeader = {'x-access-token': merchData.token};
-  axios.get('http://4c81b6f1c743.ngrok.io/userTest', {headers: authHeader })
-  .then(function (response) {
-    alert('id is ' + JSON.stringify(response.data.id));
-  })
-  .catch(function (error) {
+const testValidJWTMerch = async () => {
+  try{
+    const authHeader = {'x-access-token': await EncryptedStorage.getItem('noid_token')};
+    const response = await axios.get('http://d8e3a82ea5c8.ngrok.io/userTest', {headers: authHeader});
+
+    alert('JWT Verified!\n' + 'ID is ' + JSON.stringify(response.data.id));
+  }
+
+  catch (error) {
     alert(JSON.stringify(error.response.data.message));
-  });
+  }
 }
 
 
 const merchProfile = ({history}) => {
-  const logOut = () => {
-      merchData.id = '';
+  const logOut = async () => {
+    try{
+      await EncryptedStorage.clear();
       history.push('/');
+    }
+    
+    catch (error) {
+      console.log(error);
+    }
   }
 
 

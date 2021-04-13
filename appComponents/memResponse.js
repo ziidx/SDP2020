@@ -2,12 +2,12 @@ import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import styles from './compStyles';
 import axios from 'axios';
-import {memData} from './memberLogin';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 
 
 const memResponse = ({history}) => {
- 	function agree(){
+	const agree = async () => {
   		//console.log("Hello1");
   		/*
           API to be called:  (get) /dataprocessing
@@ -16,25 +16,26 @@ const memResponse = ({history}) => {
 
           Please make the axios call below
       	*/
-      
-     	axios.get('http://4c81b6f1c743.ngrok.io/dataprocessing', {params: {
-    			merchantUID: memData.merchUID,
-    			memberUID: memData.id,
-    			question: memData.question
-    		}})
-    		.then(function (response) {
-    			alert('agreed to answer question: ' + memData.question);
-      			//alert(JSON.stringify(response.data));
-      			memData.merchUID = '';
-				memData.question = '';
-				history.push('/memProfile');
-    		})
-    		.catch(function (error) {
-      			alert(error.message);
-      		});
+		try{
+			const response = await axios.get('http://d8e3a82ea5c8.ngrok.io/dataprocessing', {params: {
+    			merchantUID: await EncryptedStorage.getItem('merchUID'),
+    			memberUID: await EncryptedStorage.getItem('noid_uid'),
+    			question: await EncryptedStorage.getItem('question')
+    		}});
+
+			alert('agreed to answer question: ' + await EncryptedStorage.getItem('question'));
+			await EncryptedStorage.removeItem('merchUID');
+			await EncryptedStorage.removeItem('question');
+
+			history.push('/memProfile');
+		}
+
+		catch (error) {
+			alert(error);
+		}
 	}
 
-	function disagree(){
+	const disagree = async () => {
     	//console.log("Hello2");
 
   		/*
@@ -45,22 +46,23 @@ const memResponse = ({history}) => {
           Please make the axios call below
       	*/
       
-      	axios
-    		.get('http://4c81b6f1c743.ngrok.io/denied', {params: {
-    			merchantUID: memData.merchUID,
-    			memberUID: memData.id,
-    			question: memData.question
-    		}})
-    		.then(function (response) {
-    			alert('refuse to answer question: ' + memData.question);
-      			//alert(JSON.stringify(response.data));
-				memData.merchUID = '';
-				memData.question = '';
-      			history.push('/memProfile');
-    		})
-    		.catch(function (error) {
-      			alert(error.message);
-  			});
+      	try{
+			const response = await axios.get('http://d8e3a82ea5c8.ngrok.io/dataprocessing', {params: {
+    			merchantUID: await EncryptedStorage.getItem('merchUID'),
+    			memberUID: await EncryptedStorage.getItem('noid_uid'),
+    			question: await EncryptedStorage.getItem('question')
+    		}});
+
+			alert('refused to answer question: ' + await EncryptedStorage.getItem('question'));
+			await EncryptedStorage.removeItem('merchUID');
+			await EncryptedStorage.removeItem('question');
+
+			history.push('/memProfile');
+		}
+
+		catch (error) {
+			alert(error);
+		}
  	}
 
 
