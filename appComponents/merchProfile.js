@@ -4,28 +4,15 @@ import styles from './compStyles';
 import axios from 'axios';
 import NfcManager, {NfcEvents} from 'react-native-nfc-manager';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import HCESession, { NFCContentType, NFCTagType4 } from 'react-native-hce';
-
-let simulation;
- 
-const startSimulation = async () => {
-    const tag = new NFCTagType4(NFCContentType.Text, "Hello world");
-    simulation = await (new HCESession(tag)).start();
-}
- 
-function NFCSetup1(){
-  console.log("started simulation");
-  startSimulation();
-}
 
 function NFCSetup(){
   initNfc();
   readNdef();
-  console.log("Running NFC")
+  console.log("Setting up NFC")
 }
 
 function readNdef() {
-  console.log("Running NFC 1")
+  console.log("Running NFC Reader")
   const cleanUp = () => {
     NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
     NfcManager.setEventListener(NfcEvents.SessionClosed, null);

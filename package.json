@@ -13,11 +13,7 @@
     "axios": "^0.21.1",
     "react": "17.0.1",
     "react-native": "0.64.0",
-<<<<<<< HEAD
     "react-native-encrypted-storage": "^4.0.2",
-=======
-    "react-native-hce": "^0.1.2",
->>>>>>> 7efb5acaa9e3ef9e4f186cb2c519b325e5e205a1
     "react-native-nfc-manager": "^3.1.1",
     "react-router-native": "^5.2.0"
   },
