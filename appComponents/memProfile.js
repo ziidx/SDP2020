@@ -8,9 +8,10 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 const testValidJWTMem = async () => {
   try{
     const authHeader = {'x-access-token': await EncryptedStorage.getItem('noid_token')};
-    const response = await axios.get('http://d8e3a82ea5c8.ngrok.io/userTest', {headers: authHeader});
+    const response = await axios.get('http://89ffde377454.ngrok.io/userTest', {headers: authHeader});
 
-    alert('JWT Verified!\n' + 'ID is ' + JSON.stringify(response.data.id));
+    await EncryptedStorage.setItem('memID', response.data.id);
+    alert('JWT Verified!\n' + 'ID is ' + JSON.stringify(await EncryptedStorage.getItem('memID')));
   }
 
   catch (error) {
@@ -31,13 +32,17 @@ const memProfile = ({history}) => {
         Please make the axios call below
       */
     try{
-      const response = await axios.get('http://d8e3a82ea5c8.ngrok.io/memberFE/permission', 
-        { params: { memberUID: await EncryptedStorage.getItem('noid_uid')}});
-    
-      await EncryptedStorage.setItem('merchUID', '5');
-      await EncryptedStorage.setItem('question', 'Hi Im Meat');
-
-      history.push('/memResponse');
+      const response = await axios.get('http://89ffde377454.ngrok.io/memberFE/permission', 
+        { params: { UID: await EncryptedStorage.getItem('noid_uid')}});
+      await EncryptedStorage.setItem('merchUID', response.data.merchantid);
+      await EncryptedStorage.setItem('question', response.data.question);
+      
+      if(response.data.message == 'Request for info made'){
+        history.push('/memResponse');
+      }
+      else{
+        console.log(response.data.message);
+      }
     }    
 
     catch (error) {

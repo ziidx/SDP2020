@@ -107,7 +107,7 @@ const welcomePage = ({history}) => {
       <TouchableOpacity
           style={styles.buttonStyle} 
           onPress = {NFCSetup}> 
-          <Text> NFC Reader</Text>
+          <Text> NFC Reader </Text>
         </TouchableOpacity>
 
     </View>
