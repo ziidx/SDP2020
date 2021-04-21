@@ -34,13 +34,9 @@ const welcomePage = ({history}) => {
         onPress = {() => history.push("/accountCreation")}> 
         <Text> Create an Account </Text>
       </TouchableOpacity>
-      
-      <TouchableOpacity
-          style={styles.buttonStyle} 
-          onPress = {NFCSetup}> 
-          <Text> NFC Reader </Text>
-        </TouchableOpacity>
-          onPress = {BluetoothSetup}> 
+
+      <TouchableOpacity>
+          onPress = {BluetoothSetup}
           <Text> Bluetooth Reader</Text>
       </TouchableOpacity>
 
