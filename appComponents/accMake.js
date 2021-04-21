@@ -13,7 +13,7 @@ const accMake = ({history}) => {
       if(/^[a-zA-Z0-9]{3,20}$/.test(username)){
         if(/^[a-zA-Z0-9!@#$%^&*]{8,30}$/.test(password)){
           if(/^[a-zA-Z -]{2,30}$/.test(name)){
-                axios.post('http://d8e3a82ea5c8.ngrok.io/register', {
+                axios.post('http://3b540049c0d1.ngrok.io/register', {
                   username: username,
                   password: password,
                   UID: JSON.stringify(Math.floor(Math.random() * 100)),
