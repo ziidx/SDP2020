@@ -35,17 +35,6 @@ const welcomePage = ({history}) => {
         <Text> Create an Account </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity>
-          onPress = {BluetoothSetup}
-          <Text> Bluetooth Reader</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-          style={styles.buttonStyle} 
-          onPress = {BluetoothDisconnect}> 
-          <Text> Bluetooth Reader</Text>
-      </TouchableOpacity>
-
     </View>
     
   </View>
