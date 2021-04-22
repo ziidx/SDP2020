@@ -25,10 +25,10 @@ const MemberSchema = new mongoose.Schema({
   password: {type: String, required: false, select: false, set: hash},
   UID: { type: String, required: true, unique: true, set: encrypt, get: decrypt },
   Name: { type: String, required: true, set: encrypt, get: decrypt },
-  Age: { type: String, required: true, select: false, set: encrypt, get: decrypt },
+  Age: { type: String, required: true, select: true, set: encrypt, get: decrypt },
   License: { type: String, required: true, select: false, set: encrypt, get: decrypt },
   Expiry: { type: String, required: true, select: false, set: encrypt, get: decrypt },
-  CHECKSUM: { type: String, required: true, select: false }
+  CHECKSUM: { type: String, required: true, select: true }
 },{toObject : {getters: true},toJSON: {getters: true}});
 
 module.exports = mongoose.model('Members', MemberSchema);

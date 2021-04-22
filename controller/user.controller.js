@@ -9,6 +9,7 @@ const userController = express.Router();
 
 const Members = require('../models/members');
 const Merchants = require('../models/merchants');
+const hlf = require('../../../HyperLedgerFabric/app')
 
 
 var env = process.env.NODE_ENV || 'development';
@@ -19,6 +20,7 @@ var question_dict = {};
 var answer_dict = {}
 
 function checksum(){
+  console.log("TESTEST")
 	var baseString;
 	for (var i = 0; i < arguments.length; i++) {
     baseString = baseString + arguments[i];
@@ -29,12 +31,22 @@ function checksum(){
 
 //Home Page application connection test
 userController.get('/', (req, res) => {
+  checksum = "1111"
+
+
+  
+  
+   hlf.ensure();//redies ledger
+
    res.send("Welcome to NOID APP");
+
+
+
 });
 
 /**
  * POST/
- * Add a new member to your database
+ * Add a new member to your database and simultaneously add to hyper ledger fabric 
  */
 userController.post("/add-member", (req, res) => {
   	var username =req.body.username;
@@ -46,6 +58,8 @@ userController.post("/add-member", (req, res) => {
     var Expiry=req.body.Expiry;
   	
     var Checksum = checksum(UID, Name, Age, License, Expiry);
+    
+
 
   	const member = new Members({
     username: username,
@@ -197,18 +211,38 @@ userController.get('/dataprocessing', (req,res) => {
 	var merchant_id = req.query.merchantUID;
   var member_id = req.query.memberUID;
   var question = req.query.question;
-  var answer = "test";
-  console.log("Step into doc", member_id)
-   Members.findById(member_id)
-  .then(doc => {
-    answer_dict[member_id] = [question,answer];
-    console.log("Value added to answer_dict", answer_dict);
-    res.status(200) ;
-  })
-  .catch(err => {
-    console.log(err);
-  });
-  //gets info from database
+  hlf.sumcheck(member_id)
+    .then((response) => {
+      console.log("Promise response:",response, typeof response);
+      console.log("Step into doc", member_id);
+      var hlfChecksumJSON = JSON.parse(response)
+      var hlfChecksum = hlfChecksumJSON["Checksum"]; 
+      console.log(hlfChecksum);
+      var answer = "";
+       Members.find({UID:member_id})
+       .then(doc => {
+        if(hlfChecksum===doc["CHECKSUM"]){
+          var age = doc["Age"];
+          if(age-18 > 0){
+            answer = "LEGAL";
+          }
+          else{
+            answer = "ILLEGAL";
+          }
+        }
+        
+
+        answer_dict[member_id] = [question,answer];
+        console.log("Value added to answer_dict", answer_dict);
+        res.status(200) ;
+        })
+       .catch(err => {
+        console.log(err);
+        });
+      // gets info from database
+      res.status(200);
+    })
+    .catch((err) => console.log(err));
 });
 
 /**
@@ -323,6 +357,7 @@ userController.get('/registration/memberCredentials', (req,res) => {
 });
 //Development APIs for JWT  registration
 userController.post('/register', function(req, res) {
+
 	  var username =req.body.username;
     var password = req.body.password;
     var UID=req.body.UID;
@@ -330,8 +365,10 @@ userController.post('/register', function(req, res) {
     var Age=req.body.Age;
     var License=req.body.License;
     var Expiry=req.body.Expiry;
-  	
+   
     var Checksum = checksum(UID, Name, Age, License, Expiry);
+    hlf.addInfo(UID,Checksum); //add UID and checksum to the ledger
+
 
   	const member = new Members({
     username: username,
@@ -361,6 +398,10 @@ userController.post('/register', function(req, res) {
       });
     }
   );
+});
+//Development API to see Legder State 
+userController.get('/ledger',function(req,res){
+  hlf.ledgerState();
 });
 //Development API for JWT token validity
 userController.get('/userTest', function(req, res){
