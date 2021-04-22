@@ -13,8 +13,13 @@ const merchLogin = ({history}) => {
     try{
       if(/^[a-zA-Z0-9]{3,20}$/.test(username)){
         if(/^[a-zA-Z0-9!@#$%^&*]{8,30}$/.test(password)){
-          await EncryptedStorage.setItem('merchUID', '5');
-          history.push('/merchProfile');
+          if(username == 'yellow'){
+            await EncryptedStorage.setItem('merchUID', '5');
+            history.push('/merchProfile');
+          }
+          else{
+            alert('Invalid login credentials');
+          }
         }
         else{
           throw new Error('invalid password input');

@@ -9,24 +9,27 @@ import BluetoothSerial from 'react-native-bluetooth-serial';
 const MAC = '98:D3:C1:FD:B7:69';
 const btName = 'HC-05';
 
+function CheckBluetooth() {
+  BluetoothSerial.isEnabled()
+    .then((res) => console.log("Bluetooth Activation Status: ", res))
+    .catch((err) => console.log("ERROR Verification enabled",err)); //to verify bluetooth is on
+  
+  BluetoothSerial.isConnected()
+    .then((res) => console.log("Connection status: " + res))
+    .catch((err) => console.log("ERROR CONNECTION STATUS", err)); //to verify connection to device
+}
 
 function BluetoothSetup(){
   console.log("Setting up Bluetooth");
   BluetoothSerial.enable()
-   .then((res) =>  console.log("Bluetooth Enabled", res))
+   .then((res) =>  console.log("Turning on Bluetooth"))
    .catch((err) => console.log("ERROR Bluetooth enabled",err)); //to enable bluetooth
-  BluetoothSerial.isEnabled()
-    .then((res) => console.log("Verify bluetooth enabled", res))
-    .catch((err) => console.log("ERROR Verification enabled",err)); //to verify bluetooth is on
 }
 
 function BluetoothConnect(){
   BluetoothSerial.connect(MAC)
     .then((res) => console.log("Bluetooth Connected", JSON.stringify(res)))
     .catch((err) => console.log("ERROR BLUETOOTH CONNECTION", err)); //to connect to device using MAC address
-  BluetoothSerial.isConnected()
-    .then((res) => console.log("Connection status: " + res))
-    .catch((err) => console.log("ERROR CONNECTION STATUS", err)); //to verify connection to device
 }
 
 
@@ -44,26 +47,29 @@ async function MerchRequest() {
 
     Please make the axios call below
     */
-    const memberID = null;
+    
     /*BluetoothSerial.readFromDevice()
     .then((data) => {
-      memberID = data
-      console.log(data)})*/
+      //memberID = data
+      console.log(data)});
+      */
+    
+    const memberID = '31301165'
+    const merchquestion = 'Are you of legal age?';
 
-    const merchquestion = 'Are you legal?';
+    
 
-    console.log("MEMBERID: ", memberID);
-    console.log("QUESTION: ", merchquestion);
-    console.log('sending get request');
-
-    const response = await axios.get('http://3b540049c0d1.ngrok.io/.io/data-request', { params: {
+    const response = await axios.get('http://1f69218ca35b.ngrok.io/data-request', { params: {
       memberUID: memberID,
       merchantUID: await EncryptedStorage.getItem('merchUID'),
       question: merchquestion
     }})
     
     if(response.data){
-      console.log(response.data);
+      alert(JSON.stringify(response.data));
+    }
+    else{
+      alert('sending get request: ' + merchquestion);
     }
     
     console.log('get request sent');
@@ -78,7 +84,7 @@ async function MerchRequest() {
 const testValidJWTMerch = async () => {
   try{
     const authHeader = {'x-access-token': await EncryptedStorage.getItem('noid_token')};
-    const response = await axios.get('http://3b540049c0d1.ngrok.io/userTest', {headers: authHeader});
+    const response = await axios.get('http://1f69218ca35b.ngrok.io/userTest', {headers: authHeader});
 
     alert('JWT Verified!\n' + 'ID is ' + JSON.stringify(response.data.id));
   }
@@ -113,6 +119,12 @@ const merchProfile = ({history}) => {
         style={styles.buttonStyle}
         onPress={testValidJWTMerch}>
           <Text> Test JWT Authentication </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style = {styles.buttonStyle}
+          onPress = {CheckBluetooth}>
+          <Text> Check Bluetooth</Text>
         </TouchableOpacity>
 
         <TouchableOpacity

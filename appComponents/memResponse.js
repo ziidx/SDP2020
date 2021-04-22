@@ -17,14 +17,13 @@ const memResponse = ({history}) => {
           Please make the axios call below
       	*/
 		try{
-			const response = await axios.get('http://3b540049c0d1.ngrok.io/dataprocessing', {params: {
+			const response = await axios.get('http://1f69218ca35b.ngrok.io/dataprocessing', {params: {
     			merchantUID: await EncryptedStorage.getItem('merchUID'),
     			memberUID: await EncryptedStorage.getItem('noid_uid'),
-				altID: await EncryptedStorage.getItem('memID'),
+				//altID: await EncryptedStorage.getItem('memID'),
     			question: await EncryptedStorage.getItem('question')
     		}});
 
-			console.log(response.data);
 			alert('agreed to answer question: ' + await EncryptedStorage.getItem('question'));
 			await EncryptedStorage.removeItem('merchUID');
 			await EncryptedStorage.removeItem('question');
@@ -49,13 +48,12 @@ const memResponse = ({history}) => {
       	*/
       
       	try{
-			const response = await axios.get('http://3b540049c0d1.ngrok.io/denied', {params: {
+			const response = await axios.get('http://1f69218ca35b.ngrok.io/denied', {params: {
     			merchantUID: await EncryptedStorage.getItem('merchUID'),
     			member_id: await EncryptedStorage.getItem('noid_uid'),
     			question: await EncryptedStorage.getItem('question')
     		}});
 
-			console.log(response.data);
 			alert('refused to answer question: ' + await EncryptedStorage.getItem('question'));
 			await EncryptedStorage.removeItem('merchUID');
 			await EncryptedStorage.removeItem('question');
