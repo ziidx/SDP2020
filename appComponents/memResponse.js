@@ -17,7 +17,7 @@ const memResponse = ({history}) => {
           Please make the axios call below
       	*/
 		try{
-			const response = await axios.get('http://1f69218ca35b.ngrok.io/dataprocessing', {params: {
+			const response = await axios.get('http://286174d17a68.ngrok.io/dataprocessing', {params: {
     			merchantUID: await EncryptedStorage.getItem('merchUID'),
     			memberUID: await EncryptedStorage.getItem('noid_uid'),
 				//altID: await EncryptedStorage.getItem('memID'),
@@ -48,7 +48,7 @@ const memResponse = ({history}) => {
       	*/
       
       	try{
-			const response = await axios.get('http://1f69218ca35b.ngrok.io/denied', {params: {
+			const response = await axios.get('http://286174d17a68.ngrok.io/denied', {params: {
     			merchantUID: await EncryptedStorage.getItem('merchUID'),
     			member_id: await EncryptedStorage.getItem('noid_uid'),
     			question: await EncryptedStorage.getItem('question')

@@ -47,19 +47,18 @@ async function MerchRequest() {
 
     Please make the axios call below
     */
-    
+    const memberID = '31449063';
+
     /*BluetoothSerial.readFromDevice()
     .then((data) => {
-      //memberID = data
-      console.log(data)});
-      */
+      memberID = data
+      console.log(memberID)});
+    */
     
-    const memberID = '31301165'
     const merchquestion = 'Are you of legal age?';
 
     
-
-    const response = await axios.get('http://1f69218ca35b.ngrok.io/data-request', { params: {
+    const response = await axios.get('http://286174d17a68.ngrok.io/data-request', { params: {
       memberUID: memberID,
       merchantUID: await EncryptedStorage.getItem('merchUID'),
       question: merchquestion
@@ -84,7 +83,7 @@ async function MerchRequest() {
 const testValidJWTMerch = async () => {
   try{
     const authHeader = {'x-access-token': await EncryptedStorage.getItem('noid_token')};
-    const response = await axios.get('http://1f69218ca35b.ngrok.io/userTest', {headers: authHeader});
+    const response = await axios.get('http://286174d17a68.ngrok.io/userTest', {headers: authHeader});
 
     alert('JWT Verified!\n' + 'ID is ' + JSON.stringify(response.data.id));
   }

@@ -13,7 +13,7 @@ const memLogin = ({history}) => {
     try{
       if(/^[a-zA-Z0-9]{3,20}$/.test(username)){
         if(/^[a-zA-Z0-9!@#$%^&*]{8,30}$/.test(password)){
-          const response = await axios.post('http://1f69218ca35b.ngrok.io/login', {
+          const response = await axios.post('http://286174d17a68.ngrok.io/login', {
             username: username
           })
           await EncryptedStorage.setItem('noid_uid', response.data.message);

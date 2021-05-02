@@ -8,7 +8,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 const testValidJWTMem = async () => {
   try{
     const authHeader = {'x-access-token': await EncryptedStorage.getItem('noid_token')};
-    const response = await axios.get('http://1f69218ca35b.ngrok.io/userTest', {headers: authHeader});
+    const response = await axios.get('http://286174d17a68.ngrok.io/userTest', {headers: authHeader});
 
     console.log(await EncryptedStorage.getItem('noid_uid'));
     alert('JWT Verified!\n' + 'ID is ' + JSON.stringify(response.data.id));
@@ -32,7 +32,7 @@ const memProfile = ({history}) => {
         Please make the axios call below
       */
     try{
-      const response = await axios.get('http://1f69218ca35b.ngrok.io/memberFE/permission', 
+      const response = await axios.get('http://286174d17a68.ngrok.io/memberFE/permission', 
         { params: { UID: await EncryptedStorage.getItem('noid_uid')}});
       await EncryptedStorage.setItem('merchUID', response.data.merchantid);
       await EncryptedStorage.setItem('question', response.data.question);
