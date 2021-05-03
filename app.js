@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import express from "express";
 import bodyParser from "body-parser";
 
@@ -46,3 +47,151 @@ app.listen(config.server.port, () => {
      	console.log(error)
      })
 });
+
+
+=======
+>>>>>>> final changes to app.js)
+const { Gateway, Wallets } = require('fabric-network');
+const FabricCAServices = require('fabric-ca-client');
+const path = require('path');
+
+const { buildCAClient, registerAndEnrollUser, enrollAdmin } = require('./test-application/javascript/CAUtil.js');
+const { buildCCPOrg1, buildWallet } = require('./test-application/javascript/AppUtil.js');
+
+const channelName = 'mychannel';
+const chaincodeName = 'basic';
+const mspOrg1 = 'Org1MSP';
+const walletPath = path.join(__dirname, 'wallet');
+const org1UserId = 'appUser';
+let network;
+let contract;
+function prettyJSONString(inputString) {
+	return JSON.stringify(JSON.parse(inputString), null, 2);
+}
+async function main(){
+	try{
+		const ccp = buildCCPOrg1(); //build connection profile to hyper ledger fabric network
+		const caClient = buildCAClient(FabricCAServices, ccp, 'ca.org1.example.com');
+		const wallet = await buildWallet(Wallets, walletPath);
+		await enrollAdmin(caClient, wallet, mspOrg1);
+		await registerAndEnrollUser(caClient, wallet, mspOrg1, org1UserId, 'org1.department1');
+	    
+	}catch(error){
+		console.error(`Apllication Failed with error - ${error}`);
+	}
+
+}
+async function ensure(){
+	await main();
+	console.log('Ledger Ready');
+}
+//Add a block of information to the ledger
+async function addInfo(uid,checksum){
+	const ccp = buildCCPOrg1(); //build connection profile to hyper ledger fabric network
+	const wallet = await buildWallet(Wallets, walletPath);
+	const gateway = new Gateway();	
+	try{
+
+		await gateway.connect(ccp, { //start connection
+				wallet,
+				identity: org1UserId,
+				discovery: { enabled: true, asLocalhost: true } // using asLocalhost as this gateway is using a fabric network deployed locally
+			});
+		// Build a network instance based on the channel where the smart contract is deployed
+			network = await gateway.getNetwork(channelName);
+
+			// Get the contract from the network.
+			contract = network.getContract(chaincodeName);
+			contract.submitTransaction('CreateAsset',uid,checksum);
+			console.log(`User with UID: ${uid} and Checksum : ${checksum}`);
+		}catch(error){
+			console.log(error)
+
+		}finally{
+		gateway.disconnect();
+	}
+
+
+	
+}
+//See all the blocks of the ledger
+async function ledgerState(){
+	const ccp = buildCCPOrg1(); //build connection profile to hyper ledger fabric network
+	const wallet = await buildWallet(Wallets, walletPath);
+	const gateway = new Gateway();	
+	try{
+
+		await gateway.connect(ccp, { //start connection
+				wallet,
+				identity: org1UserId,
+				discovery: { enabled: true, asLocalhost: true } // using asLocalhost as this gateway is using a fabric network deployed locally
+			});
+		// Build a network instance based on the channel where the smart contract is deployed
+			network = await gateway.getNetwork(channelName);
+
+			// Get the contract from the network.
+			contract = network.getContract(chaincodeName);
+			let result = await contract.evaluateTransaction('GetAllAssets');
+			console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+		}finally{
+		gateway.disconnect();
+	}
+
+
+}
+//check if an entry exisits in the user
+async function queryLedger(checkuid){
+	const ccp = buildCCPOrg1(); //build connection profile to hyper ledger fabric network
+	const wallet = await buildWallet(Wallets, walletPath);
+	const gateway = new Gateway();	
+	try{	
+		await gateway.connect(ccp, { //start connection
+				wallet,
+				identity: org1UserId,
+				discovery: { enabled: true, asLocalhost: true } // using asLocalhost as this gateway is using a fabric network deployed locally
+			});
+		// Build a network instance based on the channel where the smart contract is deployed
+			network = await gateway.getNetwork(channelName);
+
+			// Get the contract from the network.
+			contract = network.getContract(chaincodeName);
+			result = await contract.evaluateTransaction('AssetExists', checkuid);
+			return result.toString();
+		}finally{
+		gateway.disconnect();
+	}
+}
+async function sumcheck(checkuid){
+	const ccp = buildCCPOrg1(); //build connection profile to hyper ledger fabric network
+	const wallet = await buildWallet(Wallets, walletPath);
+	const gateway = new Gateway();	
+	try{	
+		await gateway.connect(ccp, { //start connection
+				wallet,
+				identity: org1UserId,
+				discovery: { enabled: true, asLocalhost: true } // using asLocalhost as this gateway is using a fabric network deployed locally
+			});
+		// Build a network instance based on the channel where the smart contract is deployed
+			network = await gateway.getNetwork(channelName);
+
+			// Get the contract from the network.
+			contract = network.getContract(chaincodeName);
+			result = await contract.evaluateTransaction('ReadAsset', checkuid);
+			console.log(result.toString());
+			return result.toString();
+			
+		}catch(error){
+			console.log(error);
+
+		}finally{
+		gateway.disconnect();
+	}
+
+
+}
+<<<<<<< HEAD
+main()
+
+=======
+module.exports = {ensure,addInfo,ledgerState,queryLedger,sumcheck};
+>>>>>>> final changes to app.js)
