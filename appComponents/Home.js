@@ -1,9 +1,10 @@
 import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import styles from './compStyles';
-import NfcManager, {NfcEvents} from 'react-native-nfc-manager';
 
-
+/**
+* Home page with 3 buttons for page redirection: Account creation, Member Login, and Merchant Login
+ */
 const welcomePage = ({history}) => {
   
   return (

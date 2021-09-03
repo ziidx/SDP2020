@@ -3,17 +3,22 @@ import {View, Text, TextInput, TouchableOpacity} from 'react-native';
 import styles from './compStyles';
 import axios from 'axios';
 
+
+/**
+* Account creation page, for testing purposes only needs username, password, and consumer's name to create an entry in the db
+ */
+
 const accMake = ({history}) => {
   const [username, onChangeU] = React.useState('');
   const [password, onChangeP] = React.useState('');
   const [name, onChangeN] = React.useState('');
 
   const registerMem = () => {
-    try{
+    try{ //Regex for testing whether inputs meet appropriate input constraints
       if(/^[a-zA-Z0-9]{3,20}$/.test(username)){
         if(/^[a-zA-Z0-9!@#$%^&*]{8,30}$/.test(password)){
           if(/^[a-zA-Z -]{2,30}$/.test(name)){
-                axios.post('http://286174d17a68.ngrok.io/register', {
+                axios.post('http://286174d17a68.ngrok.io/register', { //Certain fields initialized as "randomized" values for demonstration purposes
                   username: username,
                   password: password,
                   UID: JSON.stringify(Math.floor(Math.random() * 100)),
@@ -46,7 +51,7 @@ const accMake = ({history}) => {
     }
   }
 
-
+  //JSX
   return( 
     <View>
         <Text style={styles.header}>
@@ -54,7 +59,7 @@ const accMake = ({history}) => {
         </Text>
 
         <View>
-          <TextInput
+          <TextInput //TextInputs could use refactoring so there is less DRY
             style={styles.inputBar}
             placeholder={'Choose Username'}
             placeholderTextColor="gray"

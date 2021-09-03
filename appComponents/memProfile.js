@@ -7,7 +7,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 
 const testValidJWTMem = async () => {
   try{
-    const authHeader = {'x-access-token': await EncryptedStorage.getItem('noid_token')};
+    const authHeader = {'x-access-token': await EncryptedStorage.getItem('noid_token')}; //Test JWT token from login, should be verified
     const response = await axios.get('http://286174d17a68.ngrok.io/userTest', {headers: authHeader});
 
     console.log(await EncryptedStorage.getItem('noid_uid'));
@@ -55,6 +55,7 @@ const memProfile = ({history}) => {
 
   }
 
+  //delete stored token/ID on logout
   const logOut = async () => {
     try{
       await EncryptedStorage.clear();
@@ -66,7 +67,7 @@ const memProfile = ({history}) => {
     }
   }
 
-
+  //JSX
   return(
     <View>
       <Text style={styles.header}>
@@ -80,7 +81,7 @@ const memProfile = ({history}) => {
           <Text> Test JWT Authentication </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
+        <TouchableOpacity //Normally should return a pop-up, but for simplicity just made a new page to route to
           style={styles.buttonStyle}
           onPress= {permission}>
           <Text> Click to begin data sharing </Text>

@@ -71,7 +71,7 @@ async function MerchRequest() {
       alert('sending get request: ' + merchquestion);
     }
     
-    console.log('get request sent');
+    console.log('get request sent'); //Sends request to backend which well then be forwarded to member
   }
 
   catch(error){
@@ -79,7 +79,9 @@ async function MerchRequest() {
   }
 }
 
-
+/**
+* Works the same as in member profile but should return an error since no JWT was given to merchant on login
+ */
 const testValidJWTMerch = async () => {
   try{
     const authHeader = {'x-access-token': await EncryptedStorage.getItem('noid_token')};
@@ -95,7 +97,7 @@ const testValidJWTMerch = async () => {
 
 
 const merchProfile = ({history}) => {
-  const logOut = async () => {
+  const logOut = async () => { //delete stored token/ID on logout
     try{
       await EncryptedStorage.clear();
       history.push('/');
@@ -106,7 +108,7 @@ const merchProfile = ({history}) => {
     }
   }
 
-
+ //JSX
   return(
     <View>
       <Text style={styles.header}>

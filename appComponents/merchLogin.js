@@ -10,11 +10,11 @@ const merchLogin = ({history}) => {
   const [password, onChangeP] = React.useState('');
 
   const testLoginMerch = async () => {
-    try{
+    try{ //Regex to make sure username and password are valid inputs
       if(/^[a-zA-Z0-9]{3,20}$/.test(username)){
         if(/^[a-zA-Z0-9!@#$%^&*]{8,30}$/.test(password)){
-          if(username == 'yellow'){
-            await EncryptedStorage.setItem('merchUID', '5');
+          if(username == 'yellow'){ //Hard coded values just for testing/demo purposes
+            await EncryptedStorage.setItem('merchUID', '5'); // No JWT is set to test invalid JWT validation on next page
             history.push('/merchProfile');
           }
           else{
@@ -35,7 +35,7 @@ const merchLogin = ({history}) => {
     }
   }
 
-
+  //JSX
   return (
     <View>
         <Text style={styles.header}>
@@ -43,7 +43,7 @@ const merchLogin = ({history}) => {
         </Text>
 
         <View>
-          <TextInput
+          <TextInput //TextInputs could use refactoring so there is less DRY
             style={styles.inputBar}
             placeholder={'Username'}
             placeholderTextColor="gray"

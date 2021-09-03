@@ -26,6 +26,9 @@ import
   Switch 
 } from 'react-router-native';
 
+/**
+* Router/Directory for navigating pages of the app, see appComponents folder.
+*/
 const App = () => {
   return (
   <NativeRouter>

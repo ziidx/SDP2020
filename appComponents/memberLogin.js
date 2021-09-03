@@ -10,13 +10,13 @@ const memLogin = ({history}) => {
   const [password, onChangeP] = React.useState('');
 
   const loginMem = async () => {
-    try{
+    try{ //Regex for making sure than inputs only allow alphanumeric characters for username + special characters for password
       if(/^[a-zA-Z0-9]{3,20}$/.test(username)){
         if(/^[a-zA-Z0-9!@#$%^&*]{8,30}$/.test(password)){
-          const response = await axios.post('http://286174d17a68.ngrok.io/login', {
+          const response = await axios.post('http://286174d17a68.ngrok.io/login', { //For testing purposes only check for matching username, production would check for password
             username: username
           })
-          await EncryptedStorage.setItem('noid_uid', response.data.message);
+          await EncryptedStorage.setItem('noid_uid', response.data.message); //Storing userId and generated JWT sent from the server to be stored locally on device for session validation
           await EncryptedStorage.setItem('noid_token', response.data.token);
           history.push('/memProfile')
         }
@@ -34,7 +34,7 @@ const memLogin = ({history}) => {
     }
   }
 
-
+  //JSX
   return (
     <View>
         <Text style={styles.header}>
@@ -42,7 +42,7 @@ const memLogin = ({history}) => {
         </Text>
         
         <View>
-          <TextInput
+          <TextInput //TextInputs could use refactoring so there is less DRY
             style={styles.inputBar}
             placeholder={'Username'}
             placeholderTextColor="gray"

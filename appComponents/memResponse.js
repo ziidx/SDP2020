@@ -66,7 +66,7 @@ const memResponse = ({history}) => {
 		}
  	}
 
-
+	//JSX
  	return(
    		<View>
     	<Text style={styles.header}>
